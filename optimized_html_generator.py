@@ -303,6 +303,9 @@ class OptimizedSEOHTMLGenerator:
         content = re.sub(r'(^|[\s\n])###\s*', r'\1', content.strip(), flags=re.MULTILINE)
         content = re.sub(r'(^|[\s\n])####\s*', r'\1', content.strip(), flags=re.MULTILINE)
         
+        # Convertir **texte** en <strong>texte</strong>
+        content = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', content)
+        
         # Nettoyer les retours à la ligne multiples
         content = re.sub(r'\n\s*\n', '\n', content)
         
@@ -324,7 +327,8 @@ class OptimizedSEOHTMLGenerator:
             
             if section.startswith('###') and not section.startswith('####'):
                 # Markdown H2 format (### Title)
-                title = section.replace('###', '').strip()
+                title_end = section.find('\n') if '\n' in section else len(section)
+                title = section[3:title_end].strip()
             elif section.startswith('####'):
                 # Skip H3 headers for TOC (too many items)
                 continue
@@ -371,7 +375,7 @@ class OptimizedSEOHTMLGenerator:
         toc_html = f'''<nav class="table-of-contents">
             <h3>📋 Sommaire de l'Article</h3>
             <ul>
-                {''.join(toc_items)}
+                {'\n                '.join(toc_items)}
             </ul>
         </nav>'''
         
@@ -388,43 +392,34 @@ class OptimizedSEOHTMLGenerator:
             # Handle Markdown-style headers (### and ####)
             if section.startswith('###') and not section.startswith('####'):
                 # H2 header (### format)
-                title = section.replace('###', '').strip()
+                title_end = section.find('\n') if '\n' in section else len(section)
+                title = section[3:title_end].strip()
+                content = section[title_end:].strip() if title_end < len(section) else ''
+                
                 section_id = re.sub(r'[^\w\s-]', '', title.lower())
                 section_id = re.sub(r'\s+', '-', section_id)[:30]
                 
-                formatted_sections.append(f'''            <section id="{section_id}">
-                <h2>{title}</h2>
-            </section>''')
+                formatted_html = f'''            <section id="{section_id}">
+                <h2>{title}</h2>'''
+                
+                if content:
+                    formatted_html += self._format_content(content)
+                
+                formatted_html += '\n            </section>'
+                formatted_sections.append(formatted_html)
             
             elif section.startswith('####'):
                 # H3 header with content (#### format)
-                lines = section.split('\n')
-                title = lines[0].replace('####', '').strip()
-                content_lines = lines[1:] if len(lines) > 1 else []
-                content = '\n'.join(content_lines).strip()
+                title_end = section.find('\n') if '\n' in section else len(section)
+                title = section[4:title_end].strip()
+                content = section[title_end:].strip() if title_end < len(section) else ''
                 
-                # Process content into readable paragraphs
+                formatted_html = f'''                <h3>{title}</h3>'''
+                
                 if content:
-                    # Split long content into paragraphs
-                    sentences = content.split('. ')
-                    paragraphs = []
-                    current_para = []
-                    
-                    for sentence in sentences:
-                        current_para.append(sentence if sentence.endswith('.') else sentence + '.')
-                        if len(' '.join(current_para)) > 200:  # Break at reasonable length
-                            paragraphs.append(' '.join(current_para))
-                            current_para = []
-                    
-                    if current_para:  # Add remaining content
-                        paragraphs.append(' '.join(current_para))
-                    
-                    formatted_sections.append(f'''                <h3>{title}</h3>''')
-                    for para in paragraphs:
-                        if para.strip():
-                            formatted_sections.append(f'''                <p>{para.strip()}</p>''')
-                else:
-                    formatted_sections.append(f'''                <h3>{title}</h3>''')
+                    formatted_html += self._format_content(content)
+                
+                formatted_sections.append(formatted_html)
             
             else:
                 # Regular content without markdown headers
@@ -445,28 +440,122 @@ class OptimizedSEOHTMLGenerator:
                     section_id = re.sub(r'[^\w\s-]', '', title.lower())
                     section_id = re.sub(r'\s+', '-', section_id)[:30]
                     
-                    formatted_sections.append(f'''            <section id="{section_id}">
-                <h2>{title}</h2>
-                <p>{content}</p>
-            </section>''')
+                    formatted_html = f'''            <section id="{section_id}">
+                <h2>{title}</h2>'''
+                    
+                    if content:
+                        formatted_html += self._format_content(content)
+                    
+                    formatted_html += '\n            </section>'
+                    formatted_sections.append(formatted_html)
                 else:
-                    # Just regular content - split if too long
-                    if len(section.split()) > 60:
-                        sentences = section.split('. ')
-                        current_para = []
-                        
-                        for sentence in sentences:
-                            current_para.append(sentence if sentence.endswith('.') else sentence + '.')
-                            if len(' '.join(current_para)) > 200:
-                                formatted_sections.append(f'''                <p>{' '.join(current_para).strip()}</p>''')
-                                current_para = []
-                        
-                        if current_para:
-                            formatted_sections.append(f'''                <p>{' '.join(current_para).strip()}</p>''')
-                    else:
-                        formatted_sections.append(f'''                <p>{section}</p>''')
+                    # Just regular content
+                    formatted_sections.append(self._format_content(section))
         
         return '\n'.join(formatted_sections)
+        
+    def _format_content(self, content: str) -> str:
+        """Format content with proper HTML handling for markdown elements"""
+        if not content:
+            return ''
+            
+        # Convert markdown to HTML
+        content = self._clean_markdown_content(content)
+        
+        # Approche simplifiée pour les listes à puces et numérotées
+        # Remplacer les patterns de liste avant de formater le reste
+        
+        # 1. D'abord, identifier les listes à puces
+        if ' - ' in content or content.startswith('- '):
+            # Traiter les listes à puces
+            items = []
+            paragraphs = []
+            in_list = False
+            
+            for line in content.split('\n'):
+                line = line.strip()
+                if line.startswith('- '):
+                    # Début ou continuation d'une liste
+                    if not in_list:
+                        # Si on a du texte précédent, l'ajouter comme paragraphe
+                        if paragraphs:
+                            paragraphs[-1] = f'<p>{paragraphs[-1]}</p>'
+                        in_list = True
+                        items = []
+                    
+                    # Ajouter l'élément de liste sans le tiret
+                    item_text = line[2:].strip()
+                    items.append(f'<li>{item_text}</li>')
+                else:
+                    # Ligne normale (pas un élément de liste)
+                    if in_list:
+                        # Terminer la liste précédente
+                        list_html = '<ul>\n                    ' + '\n                    '.join(items) + '\n                </ul>'
+                        paragraphs.append(list_html)
+                        in_list = False
+                    
+                    # Ajouter la ligne comme paragraphe normal
+                    if line:
+                        paragraphs.append(line)
+            
+            # Gérer toute liste restante à la fin
+            if in_list:
+                list_html = '<ul>\n                    ' + '\n                    '.join(items) + '\n                </ul>'
+                paragraphs.append(list_html)
+            
+            # Formater les paragraphes restants
+            for i, para in enumerate(paragraphs):
+                if not para.startswith('<') and not para.endswith('>'):
+                    paragraphs[i] = f'<p>{para}</p>'
+            
+            return '\n                ' + '\n                '.join(paragraphs)
+            
+        # 2. Traitement des listes numérotées
+        elif re.search(r'^\d+\.\s', content, re.MULTILINE):
+            items = []
+            paragraphs = []
+            in_list = False
+            
+            for line in content.split('\n'):
+                line = line.strip()
+                if re.match(r'^\d+\.\s', line):
+                    # Début ou continuation d'une liste numérotée
+                    if not in_list:
+                        # Si on a du texte précédent, l'ajouter comme paragraphe
+                        if paragraphs:
+                            paragraphs[-1] = f'<p>{paragraphs[-1]}</p>'
+                        in_list = True
+                        items = []
+                    
+                    # Ajouter l'élément de liste sans le numéro
+                    item_text = re.sub(r'^\d+\.\s', '', line).strip()
+                    items.append(f'<li>{item_text}</li>')
+                else:
+                    # Ligne normale (pas un élément de liste)
+                    if in_list:
+                        # Terminer la liste précédente
+                        list_html = '<ol>\n                    ' + '\n                    '.join(items) + '\n                </ol>'
+                        paragraphs.append(list_html)
+                        in_list = False
+                    
+                    # Ajouter la ligne comme paragraphe normal
+                    if line:
+                        paragraphs.append(line)
+            
+            # Gérer toute liste restante à la fin
+            if in_list:
+                list_html = '<ol>\n                    ' + '\n                    '.join(items) + '\n                </ol>'
+                paragraphs.append(list_html)
+            
+            # Formater les paragraphes restants
+            for i, para in enumerate(paragraphs):
+                if not para.startswith('<') and not para.endswith('>'):
+                    paragraphs[i] = f'<p>{para}</p>'
+            
+            return '\n                ' + '\n                '.join(paragraphs)
+        
+        # 3. Paragraphes normaux sans liste
+        return f'\n                <p>{content}</p>'
 
 def main():
     """Générer LE fichier HTML final optimisé (un seul!)"""

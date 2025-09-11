@@ -62,7 +62,7 @@ print("✅ Data freshness validator ready")
 print("✅ Adaptive headline analyzer ready")
 
 # Define the Original Prompt/Headline
-HEADLINE = "Consumer prices rose at annual rate of 2.9% in August, as weekly jobless claims jump"
+HEADLINE = "US to urge G7 to impose high tariffs on China, India over Russian oil purchases"
 
 # AUTOMATIC SEARCH TERMS GENERATION (NO MORE HARDCODING!)
 print("🧠 Analyzing headline automatically...")
