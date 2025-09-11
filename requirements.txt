@@ -13,3 +13,4 @@ lxml==4.9.3
 python-dateutil==2.8.2
 # Dépendances pour l'analyse HTML et génération de pages
 beautifulsoup4==4.12.2
+huggingface_hub

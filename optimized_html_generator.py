@@ -3,8 +3,22 @@
 
 import json
 import re
+import os
 from datetime import datetime
 from typing import Dict, Any, List
+import base64
+from io import BytesIO
+
+# Imports pour la génération d'image avec Hugging Face
+# Permet de générer une image à partir d'un prompt textuel
+# Utilise le modèle Stable Diffusion XL pour des images de haute qualité
+try:
+    from huggingface_hub import InferenceClient
+    HF_AVAILABLE = True
+except ImportError:
+    print("\n\033[93mATTENTION: huggingface_hub n'est pas installé. La génération d'image ne sera pas disponible.\033[0m")
+    print("Pour installer: pip install huggingface_hub pillow")
+    HF_AVAILABLE = False
 
 class OptimizedSEOHTMLGenerator:
     """Générateur HTML unique avec toutes les optimisations intégrées"""
@@ -19,6 +33,56 @@ class OptimizedSEOHTMLGenerator:
         self.keywords = self.data.get('keyword_research', {})
         self.seo_suggestions = self.data.get('seo_suggestions', {})
         self.seo_audit = self.data.get('seo_audit', {})
+        
+        # Configuration pour la génération d'image
+        self.hf_token = os.environ.get('HF_TOKEN', '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')
+        self.image_prompt = self.data.get('image_generation_prompt', '')
+        self.image_path = 'article_image.jpg'
+        self.image_base64 = None
+    
+    def generate_article_image(self) -> bool:
+        """Générer une image pour l'article en utilisant Hugging Face
+        
+        Cette fonction utilise l'API Hugging Face pour générer une image à partir du prompt
+        stocké dans le JSON. L'image est sauvegardée localement et également convertie en
+        base64 pour être intégrée directement dans le HTML.
+        
+        Returns:
+            bool: True si l'image a été générée avec succès, False sinon
+        """
+        # Vérifier si la génération d'image est possible
+        if not HF_AVAILABLE or not self.image_prompt:
+            return False
+        
+        try:
+            # Configurer le client Hugging Face avec le modèle Stable Diffusion XL
+            # Ce modèle produit des images de haute qualité pour des articles professionnels
+            client = InferenceClient(
+                model="stabilityai/stable-diffusion-xl-base-1.0",
+                token=self.hf_token
+            )
+            
+            # Générer l'image à partir du prompt défini dans le JSON
+            print("\n📷 Génération de l'image de l'article...")
+            image = client.text_to_image(
+                prompt=self.image_prompt
+            )
+            
+            # Sauvegarder l'image localement pour réutilisation future
+            image.save(self.image_path)
+            print(f"\n✅ Image générée et sauvegardée sous: {self.image_path}")
+            
+            # Convertir l'image en base64 pour l'intégrer directement dans le HTML
+            # Cela permet d'avoir une image intégrée sans dépendance externe
+            buffered = BytesIO()
+            image.save(buffered, format="JPEG")
+            self.image_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
+            
+            return True
+        except Exception as e:
+            # Gérer les erreurs potentielles (problèmes de connexion, token invalide, etc.)
+            print(f"\n❌ Erreur lors de la génération de l'image: {e}")
+            return False
     
     def optimize_title(self, title: str) -> str:
         """Optimiser automatiquement le titre (50-60 caractères)"""
@@ -48,6 +112,9 @@ class OptimizedSEOHTMLGenerator:
     
     def generate_optimized_html(self, output_file: str = "seo_optimized_final.html") -> str:
         """Générer LE fichier HTML final optimisé (un seul!)"""
+        
+        # Générer l'image de l'article si possible
+        has_image = self.generate_article_image()
         
         # Optimiser titre et meta description automatiquement
         title_optimized = self.optimize_title(self.article.get('title', ''))
@@ -79,6 +146,15 @@ class OptimizedSEOHTMLGenerator:
             "timeRequired": f"PT{reading_time}M"
         }
         
+        # Ajouter l'image au schema si disponible
+        if has_image:
+            schema_data["image"] = {
+                "@type": "ImageObject",
+                "url": f"file://{os.path.abspath(self.image_path)}",
+                "width": "1024",
+                "height": "768"
+            }
+        
         # HTML Template optimisé
         html_content = f'''<!DOCTYPE html>
 <html lang="fr">
@@ -95,7 +171,7 @@ class OptimizedSEOHTMLGenerator:
     <meta property="og:description" content="{meta_desc_optimized}">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://votre-site.com/articles/current-article">
-    <meta property="og:image" content="https://votre-site.com/images/article-cover.jpg">
+    <meta property="og:image" content="{f'data:image/jpeg;base64,{self.image_base64}' if self.image_base64 else 'https://votre-site.com/images/article-cover.jpg'}">
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{title_optimized}">
@@ -215,6 +291,7 @@ class OptimizedSEOHTMLGenerator:
             <div style="background: var(--light); padding: 1rem; border-radius: 8px; margin: 1.5rem 0; font-style: italic; border-left: 4px solid var(--accent);">
                 {meta_desc_optimized}
             </div>
+            {f'<div class="article-image"><img src="data:image/jpeg;base64,{self.image_base64}" alt="{title_optimized}" style="max-width:100%; border-radius:8px; margin:1rem 0;"></div>' if self.image_base64 else ''}
             <div class="article-stats">
                 <span>📖 {word_count} mots</span>
                 <span>⏱️ {reading_time} min</span>
@@ -599,6 +676,12 @@ def main():
         print(f"✅ Responsive mobile-first")
         print(f"✅ Accessibilité WCAG")
         
+        # Afficher le statut de l'image
+        if generator.image_base64:
+            print(f"✅ Image générée par IA intégrée")
+        else:
+            print(f"⚠️ Image non générée - vérifiez votre connexion ou token HF")
+            
         print(f"\n📊 SCORE SEO ESTIMÉ: 78-85%")
         print(f"🎯 OBJECTIF 65-80%: DÉPASSÉ!")
         
