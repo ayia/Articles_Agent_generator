@@ -2,16 +2,16 @@
 🎯 RAPPORT D'ANALYSE SEO
 ============================================================
 
-📊 SCORE GLOBAL: 76.0% (76/100 points)
+📊 SCORE GLOBAL: 75.0% (75/100 points)
 🏆 GRADE SEO: B+
 
 📋 DÉTAIL PAR CATÉGORIE:
 ----------------------------------------
 🏷️  Meta Tags: 25/25 points
-📄 Structure Contenu: 14/20 points
-🎯 Optimisation Mots-clés: 12/15 points
+📄 Structure Contenu: 18/20 points
+🎯 Optimisation Mots-clés: 6/15 points
 ⚙️  SEO Technique: 18/20 points
-👤 Expérience Utilisateur: 7/10 points
+👤 Expérience Utilisateur: 8/10 points
 🔥 Fraîcheur Contenu: 0/10 points
 
 🎯 OBJECTIF: 65-80% pour un bon SEO
@@ -19,10 +19,9 @@
 
 💡 RECOMMANDATIONS D'AMÉLIORATION:
 ----------------------------------------
- 1. 🔧 Meta description trop longue (>160 caractères)
- 2. 🔧 Ajouter une navigation ou table des matières
- 3. 🔧 Raccourcir les paragraphes (15-30 mots idéal)
- 4. ❌ Impossible d'analyser la fraîcheur des données
+ 1. 🔧 Inclure des mots-clés dans la meta description
+ 2. 🔧 Inclure des mots-clés dans les titres (H1, H2, H3)
+ 3. ❌ Impossible d'analyser la fraîcheur des données
 
 🎯 VOUS ÊTES DANS LA CIBLE! (65-80%)
 -----------------------------------

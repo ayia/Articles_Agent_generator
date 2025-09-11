@@ -28,6 +28,7 @@ from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 from free_search_tools import FreeSearchCrewAITool  # Recherche web gratuite sans API
 from freshness_validator import DataFreshnessValidator  # Validation fraîcheur données
+from final_headline_analyzer import FinalHeadlineAnalyzer  # Final precise analysis - ZERO off-topic terms
 
 # Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
@@ -41,37 +42,49 @@ if not DEEPSEEK_API_KEY:
 
 # Custom LLM setup for DeepSeek using ChatOpenAI (via LiteLLM compatibility)
 llm = ChatOpenAI(
-    model="deepseek/deepseek-chat",  # Correct format for LiteLLM
+    model="deepseek/deepseek-chat",  # Correct LiteLLM format with provider
     api_key=DEEPSEEK_API_KEY,
     base_url=DEEPSEEK_BASE_URL,
     temperature=0.7,  # Balanced for creative yet factual output
     max_tokens=8000,  # Increased for longer, more detailed responses to support 1000-1500 word articles
 )
 
-# Configuration de l'outil de recherche gratuit (AUCUNE API REQUISE!)
-print("🔧 Initialisation de l'outil de recherche gratuit...")
+# Setup free search tools (NO API REQUIRED!)
+print("🔧 Initializing free search tools...")
 free_search_tool = FreeSearchCrewAITool()
-print("📅 Initialisation du validateur de fraîcheur...")
+print("📅 Initializing data freshness validator...")
 freshness_validator = DataFreshnessValidator()
+print("🎯 Initializing final precise headline analyzer...")
+headline_analyzer = FinalHeadlineAnalyzer()
 tools = [free_search_tool]
-print("✅ Outil de recherche gratuit prêt (RSS + DuckDuckGo + Sources publiques)")
-print("✅ Validateur de fraîcheur des données prêt")
+print("✅ Free search tool ready (RSS + DuckDuckGo + Public sources)")
+print("✅ Data freshness validator ready")
+print("✅ Adaptive headline analyzer ready")
 
 # Define the Original Prompt/Headline
-HEADLINE = "Trump’s pressure on Europe to slap 100% tariffs on India and China raises eyebrows"
+HEADLINE = "Consumer prices rose at annual rate of 2.9% in August, as weekly jobless claims jump"
+
+# AUTOMATIC SEARCH TERMS GENERATION (NO MORE HARDCODING!)
+print("🧠 Analyzing headline automatically...")
+search_terms = headline_analyzer.generate_focused_search_terms(HEADLINE)
+search_terms_str = "', '".join(search_terms)
+print(f"🔍 Auto-generated search terms: {len(search_terms)}")
+for i, term in enumerate(search_terms[:5], 1):  # Show first 5
+    print(f"   {i}. \"{term}\"")
+print("✅ Search terms automatically adapted to headline topic!")
 PROMPT_INSTRUCTIONS = f"""
 Generate a comprehensive, SEO-optimized business news article in English based on the headline: '{HEADLINE}'.
-Use available knowledge or search tools to gather recent, reliable sources for facts, context, expert analysis, and global impacts on trade, pharmaceuticals, and economies.
+Use available knowledge or search tools to gather recent, reliable sources for facts, context, expert analysis, and relevant economic impacts related to the headline topic.
 Ensure the article is original, fact-checked, 1000-1500 words (expanded for depth), engaging, and professional for a business audience. Expand sections with detailed analysis, historical context, multiple stakeholder perspectives, data visualizations ideas, and forward-looking scenarios.
 
 Before writing, conduct keyword research: Identify 5-10 primary keywords, 10-15 long-tail phrases, and related LSI terms. List them with estimated search volumes, competition levels, and natural incorporation suggestions.
 
 Structure per SEO best practices and E-E-A-T:
-- Title (H1): Compelling, keyword-rich (include 1-2 primaries).
+- Title (H1): CREATE A NEW SEO-optimized title (50-60 characters) using keyword research data. DO NOT use the original headline. Make it compelling, keyword-rich (include 1-2 primary keywords), and optimized for search engines.
 - Meta Description: 150-160 characters, including primaries and CTA (suggest at end).
 - Headings: Use H2/H3/H4 for readability and depth (aim for 8-12 sub-sections).
 - Introduction: Hook with key facts and broader implications, include 2-3 primaries, outline article (200-300 words).
-- Body: Short paragraphs (3-5 sentences), active voice, bullets/lists/tables for impacts/quotes/data/comparisons; interweave secondary keywords/long-tails, inline citations, expert quotes, data (e.g., trade stats, market forecasts). Expand with historical parallels, stakeholder reactions, economic modeling, and interconnections between tariffs and pharma (e.g., supply chain effects). Target Flesch score 60+, mobile-friendly. Aim for 700-1000 words here.
+- Body: Write in natural, conversational style with varied sentence structures. Mix short punchy sentences with longer explanatory ones. Use natural transitions like "Here's what this means...", "But wait, there's more...", "Here's the thing...". Include analogies and real-world examples. Avoid robotic corporate language. Interweave keywords naturally (not forced). Add personal insights and human perspective. Target Flesch score 60+ but prioritize natural flow. Aim for 700-1000 engaging words.
 - Conclusion: Summarize implications, forward-looking analysis (e.g., 2026 projections), include CTA (300+ words for closure).
 
 Additional SEO: Suggest 3-5 internal links, 2-3 external links to sources, 3-5 image ideas with alt text (include charts/graphs). Maintain keyword density: 1-2% for primaries, use synonyms/variations/LSI naturally.
@@ -116,10 +129,13 @@ keyword_researcher = Agent(
 )
 
 # Task for Keyword Research
+# AUTOMATIC TASK GENERATION (No more hardcoding!)
+keyword_task_description = headline_analyzer.generate_precise_task_description(HEADLINE, "keyword")
+
 keyword_task = Task(
-    description=f"FIRST: Use the search tool to find current trending topics related to: '{HEADLINE}'. Search for terms like 'Trump tariffs', 'EU China trade', 'Novo Nordisk layoffs', 'Ozempic market'. Then analyze the search results to identify 5-10 primary keywords, 10-15 long-tail phrases, and LSI terms based on what's currently trending in news. Include estimated search volumes, competition levels, and natural incorporation suggestions.",
+    description=keyword_task_description,
     agent=keyword_researcher,
-    expected_output="A comprehensive keyword analysis based on real search data, including trending terms found in current news sources.",
+    expected_output="A comprehensive keyword analysis based on real search data, with search terms automatically adapted to the headline topic.",
 )
 
 # Agent 2: Fact and Deep Researcher
@@ -134,44 +150,81 @@ fact_researcher = Agent(
     allow_delegation=False,
 )
 
+# AUTOMATIC FACTS TASK GENERATION (No more hardcoding!)
+fact_task_description = headline_analyzer.generate_precise_task_description(HEADLINE, "facts")
+
 fact_task = Task(
-    description=f"MANDATORY: Use the search tool extensively! Search for: 'Trump tariffs EU China India 2025', 'Novo Nordisk layoffs 9000 jobs', 'Ozempic competition Eli Lilly', 'pharmaceutical market trends 2025'. Gather real-time information from news sources, RSS feeds, and recent publications. Extract facts, expert quotes, market data, trade statistics, and economic impacts. Cross-reference multiple sources and include recent developments, stakeholder reactions, and market analysis. Build a comprehensive fact base with current citations.",
+    description=fact_task_description,
     agent=fact_researcher,
-    expected_output="A fact-rich report based on current web search results, including recent news articles, market data, expert opinions, and up-to-date statistics with proper source citations.",
+    expected_output="A fact-rich report based on current web search results about the headline topic, including recent data, expert analysis, and up-to-date statistics with proper source citations.",
 )
 
 # Agent 3: Data Freshness Validator
 # Role: Valider la fraîcheur des données et recommander des améliorations
 freshness_agent = Agent(
     role="Data Freshness Validator",
-    goal="Analyser la fraîcheur des données collectées et s'assurer que l'article utilisera uniquement des informations récentes et pertinentes. Identifier les sources obsolètes et recommander des recherches complémentaires si nécessaire. Calculer des métriques de fraîcheur pour l'audit SEO final.",
-    backstory="Vous êtes un expert en validation de données avec une expertise particulière dans la fraîcheur du contenu pour le SEO. Vous savez que Google privilégie le contenu récent et à jour. Vous analysez les dates de publication, évaluez la pertinence temporelle des informations et filtrez les données obsolètes.",
+    goal="Analyze the freshness of collected data and ensure the article uses only recent and relevant information. Identify outdated sources and recommend additional research if necessary. Calculate freshness metrics for the final SEO audit.",
+    backstory="You are a data validation expert with particular expertise in content freshness for SEO. You know that Google favors recent and up-to-date content. You analyze publication dates, assess temporal relevance of information, and filter out outdated data.",
     llm=llm,
     verbose=True,
     allow_delegation=False,
 )
 
 freshness_task = Task(
-    description="ANALYSER la fraîcheur de toutes les données collectées par l'agent de recherche. Identifier les sources datées de plus de 30 jours pour les actualités, 90 jours pour les analyses business. Calculer un score de fraîcheur global. Recommander des recherches supplémentaires si trop de sources sont obsolètes. Préparer un rapport de fraîcheur avec métriques pour l'audit SEO (âge moyen des sources, pourcentage de sources récentes, score de fraîcheur global).",
+    description="ANALYZE the freshness of all data collected by the research agent. Identify sources older than 30 days for news content, 90 days for business analysis. Calculate a global freshness score. Recommend additional research if too many sources are outdated. Prepare a freshness report with metrics for the final SEO audit (average source age, percentage of recent sources, global freshness score).",
     agent=freshness_agent,
-    expected_output="Un rapport de validation de fraîcheur avec score global, distribution par âge des sources, recommandations d'amélioration, et métriques détaillées pour l'audit SEO final.",
+    expected_output="A freshness validation report with global score, age distribution of sources, improvement recommendations, and detailed metrics for the final SEO audit.",
 )
 
 # Agent 4: Article Writer
 # Role: Generate the full article using research. Enhanced for length and structure.
 article_writer = Agent(
-    role="Professional Business Article Writer",
-    goal="Write a well-structured, logical 1000-1500 word article based on research. Create a clear narrative flow: Introduction (hook + context), Body with logical progression (Background → Current Events → Analysis → Implications), Conclusion (summary + outlook). Use proper paragraph structure, clear transitions, and coherent arguments. Avoid repetitive content and ensure each section builds on the previous one.",
-    backstory="You are an experienced business journalist who writes clear, logical articles for major publications. You excel at creating coherent narratives that flow naturally from one point to the next.",
+    role="Engaging Reader-First Content Creator",
+    goal="Write a captivating 1200-1800 word article that hooks readers immediately and keeps them scrolling. CRITICAL: Create an SEO-optimized title (50-60 characters) using keyword research data, NOT the original headline. Write with urgency, emotion, and personal connection - like explaining crucial news to a friend who needs to understand it RIGHT NOW. Every paragraph must earn the reader's next scroll.",
+    backstory="You are a master storyteller and engagement expert who understands modern web readers. You know people skim first, so you write scannable content with shocking hooks, short punchy paragraphs, and actionable insights. You never sound corporate or robotic - you write like that friend everyone goes to for advice because you explain complex things in simple, relatable ways. Your articles make people think 'I need to share this!' and 'I should bookmark this site.'",
     llm=llm,
     verbose=True,
     allow_delegation=False,
 )
 
 write_task = Task(
-    description=f"Using keyword and fact research, generate a well-structured, logical article on '{HEADLINE}'. Create a clear narrative flow: 1) Introduction with hook and context, 2) Background on Trump's tariff strategy, 3) Current events and developments, 4) Analysis of economic impacts, 5) Novo Nordisk layoffs context, 6) Interconnections between events, 7) Expert perspectives, 8) Future implications, 9) Conclusion with outlook. Ensure each paragraph flows logically to the next. Avoid repetition and maintain coherence throughout.",
+    description=f"""Write a captivating, human-style article about '{HEADLINE}' that hooks readers and keeps them engaged. 
+
+CRITICAL: CREATE A NEW SEO-OPTIMIZED TITLE (50-60 characters) using keyword research data - DO NOT copy the original headline.
+
+READER ENGAGEMENT REQUIREMENTS:
+- START with a shocking statistic, surprising fact, or bold statement that makes readers think "I MUST read this!"
+- Write SHORT paragraphs (3-4 sentences maximum, 50-80 words each)
+- Break up text with bullet points, numbered lists, and subheadings (H3) for easy scanning
+- Use conversational questions directly to the reader: "Have you noticed...?" "What does this mean for you?"
+- Include personal anecdotes: "I was talking to a friend..." "Last week, I saw..."
+- Add analogies from daily life: "It's like when you're at the grocery store..."
+- End with 2-3 CONCRETE actions readers can take RIGHT NOW
+
+WRITING STYLE REQUIREMENTS:
+- Write as if chatting with a close friend who needs to understand this topic
+- Use emotional language: "shocking," "surprising," "crucial," "game-changing"
+- Vary sentence lengths dramatically (mix 5-word punches with longer explanations)
+- Include rhetorical questions that make readers pause and think
+- Use "you" and "your" constantly to make it personal
+- Avoid ALL corporate jargon - write like a real person talks
+
+VISUAL STRUCTURE:
+- Engaging introduction (2-3 SHORT paragraphs with hook)
+- 6-8 body sections with conversational H2 headings
+- Within each section: H3 subheadings, bullet points, key facts in bold
+- Thoughtful conclusion with specific next steps for readers
+- Make it scannable for mobile readers who skim first
+
+ENGAGEMENT HOOKS:
+- Start each section with a question or surprising statement
+- Include "Here's what this means for you..." moments
+- Add urgency: "Right now..." "This week..." "Before you..."
+- Personal stakes: "If you're like most people..." "Your wallet will feel..."
+
+Focus on the headline topics but write like you're urgently explaining something important to someone you care about.""",
     agent=article_writer,
-    expected_output="A well-structured article with clear narrative flow: title, meta_description, introduction (engaging hook + context), body (logical progression of 6-8 coherent sections), conclusion (summary + outlook). Each section should build naturally on the previous one.",
+    expected_output="A highly engaging, scannable article with: 1) NEW SEO title (50-60 chars), 2) compelling meta description, 3) hook-driven introduction with shocking opener, 4) short paragraphs with bullet points and H3 subheadings, 5) conclusion with 2-3 concrete action steps. Content should feel urgent, personal, and written by someone who genuinely cares about helping the reader understand.",
 )
 
 # Agent 5: SEO Auditor and JSON Formatter
@@ -205,11 +258,14 @@ crew = Crew(
 
 # Execute the Crew
 if __name__ == "__main__":
-    print("Starting CrewAI execution with DeepSeek API...")
+    print("🚀 Starting CrewAI execution with adaptive headline analysis...")
+    print(f"📰 Processing headline: {HEADLINE[:50]}...")
+    print(f"🔍 Using {len(search_terms)} dynamically generated search terms")
+    
     result = crew.kickoff(inputs={"headline": HEADLINE, "instructions": PROMPT_INSTRUCTIONS})
     
     # Parse and print the JSON output
-    print("\nGenerated JSON Output:")
+    print("\n📊 Generated JSON Output:")
     
     # Extract the JSON content from the CrewOutput result
     if hasattr(result, 'raw'):
@@ -222,7 +278,7 @@ if __name__ == "__main__":
         try:
             json_content = json.loads(json_content)
         except json.JSONDecodeError:
-            print("Error: Unable to parse JSON")
+            print("❌ Error: Unable to parse JSON")
             exit(1)
     
     print(json.dumps(json_content, indent=2, ensure_ascii=False))
@@ -230,12 +286,25 @@ if __name__ == "__main__":
     # Save to file
     with open("seo_article_output.json", "w", encoding="utf-8") as f:
         json.dump(json_content, f, indent=2, ensure_ascii=False)
-    print("\nOutput saved to 'seo_article_output.json'")
+    print("\n✅ Output saved to 'seo_article_output.json'")
     
-    # Optional: Estimate word count for verification
+    # Verify title optimization
     if 'article' in json_content:
+        generated_title = json_content['article'].get('title', '')
+        title_length = len(generated_title)
+        
         body_text = json_content['article'].get('introduction', '') + ' '.join(json_content['article'].get('body', [])) + json_content['article'].get('conclusion', '')
         word_count = len(body_text.split())
-        print(f"\nEstimated article word count: {word_count} (target: 1000-1500)")
+        
+        print(f"\n📊 ARTICLE METRICS:")
+        print(f"   🎯 Generated title: \"{generated_title}\"")
+        print(f"   📏 Title length: {title_length} chars ({'✅ Optimal' if title_length <= 60 else '⚠️ Too long'})")
+        print(f"   📝 Word count: {word_count} (target: 1000-1500)")
+        
+        # Verify title is different from headline
+        if generated_title.lower() != HEADLINE.lower():
+            print(f"   ✅ Title successfully generated (different from headline)")
+        else:
+            print(f"   ⚠️ Title same as headline - optimization needed")
     
-    print("\nExecution complete. Check logs for deep search details.")
+    print(f"\n🎉 Execution complete! Adaptive system used {len(search_terms)} auto-generated search terms.")
