@@ -115,6 +115,7 @@ class SEOArticleOutput(BaseModel):
     article: ArticleContent = Field(..., description="Complete article structure with full content")
     seo_suggestions: Dict[str, Any] = Field(..., description="SEO suggestions")
     seo_audit: Dict[str, Any] = Field(..., description="SEO audit with freshness metrics")
+    image_generation_prompt: str = Field(..., description="Detailed prompt for AI image generation based on article content")
 
 # Agent 1: Keyword Researcher
 # Role: Perform keyword research using web search for volumes, competition, etc.
@@ -227,29 +228,58 @@ Focus on the headline topics but write like you're urgently explaining something
     expected_output="A highly engaging, scannable article with: 1) NEW SEO title (50-60 chars), 2) compelling meta description, 3) hook-driven introduction with shocking opener, 4) short paragraphs with bullet points and H3 subheadings, 5) conclusion with 2-3 concrete action steps. Content should feel urgent, personal, and written by someone who genuinely cares about helping the reader understand.",
 )
 
-# Agent 5: SEO Auditor and JSON Formatter
+# Agent 5: AI Image Generation Prompt Creator
+# Role: Create detailed prompts for AI image generation based on article content
+image_prompt_creator = Agent(
+    role="AI Image Generation Specialist",
+    goal="Create a detailed, specific prompt for AI image generation tools (DALL-E, Midjourney, Stable Diffusion) based on the article content. The prompt should capture the key visual elements, mood, style, and context of the article to generate a compelling, relevant image that enhances the article's impact.",
+    backstory="You are a visual storytelling expert who understands how to translate complex business and economic concepts into compelling visual prompts. You know how to create prompts that generate professional, engaging images that perfectly complement written content and enhance reader engagement.",
+    llm=llm,
+    verbose=True,
+    allow_delegation=False,
+)
+
+# Agent 6: SEO Auditor and JSON Formatter
 # Role: Audit SEO, ensure structure, output valid JSON. Enhanced for detailed audit with freshness metrics.
 seo_auditor = Agent(
     role="SEO Auditor and JSON Structurer",
-    goal="Analyze the generated content in depth: Calculate keyword density/placement (1-2%, with breakdowns), estimate Flesch score (target 60+, with factors), suggest mobile opts/backlinks with rationale. INTEGRATE freshness validation results into the SEO audit - include data freshness scores, source age distribution, and freshness impact on SEO performance. Format everything into valid JSON per schema: keyword_research, article, seo_suggestions, seo_audit (with freshness metrics).",
+    goal="Analyze the generated content in depth: Calculate keyword density/placement (1-2%, with breakdowns), estimate Flesch score (target 60+, with factors), suggest mobile opts/backlinks with rationale. INTEGRATE freshness validation results into the SEO audit - include data freshness scores, source age distribution, and freshness impact on SEO performance. Format everything into valid JSON per schema: keyword_research, article, seo_suggestions, seo_audit (with freshness metrics), image_generation_prompt.",
     backstory="You are an SEO specialist and data validator with expertise in content freshness validation. You understand that Google rewards fresh, up-to-date content and you incorporate data age and freshness metrics into comprehensive SEO audits.",
     llm=llm,
     verbose=True,
     allow_delegation=False,
 )
 
+# Task for Image Generation Prompt
+image_task = Task(
+    description=f"""Create a detailed AI image generation prompt based on the article content about '{HEADLINE}'. 
+
+REQUIREMENTS:
+- Analyze the article's main themes, key concepts, and emotional tone
+- Create a prompt that captures the economic/financial context (inflation, job market, consumer impact)
+- Include specific visual elements: charts, graphs, people, urban settings, financial symbols
+- Specify style: professional, modern, clean, business-focused
+- Include mood: serious but accessible, concerned but not alarmist
+- Add technical specifications: high resolution, professional photography style, good lighting
+- Make it suitable for DALL-E, Midjourney, or Stable Diffusion
+
+The prompt should be 2-3 sentences, detailed enough to generate a compelling image that would work as a hero image for this economic news article.""",
+    agent=image_prompt_creator,
+    expected_output="A detailed, specific prompt for AI image generation that captures the article's essence and would create a compelling visual representation of the economic concepts discussed.",
+)
+
 audit_task = Task(
-    description="Take inputs from ALL previous tasks including freshness validation. CRITICAL: Include the COMPLETE ARTICLE TEXT (introduction, body paragraphs, conclusion) in the article section, not just metadata. Audit in detail: keyword_analysis (summary with metrics), readability_score (e.g., '65', with explanation), mobile_optimization (array of 4+ suggestions with benefits), backlink_opportunities (array of 3+ ideas with targets). CRITICAL: Include comprehensive freshness metrics in seo_audit: data_freshness_score, source_age_distribution, freshness_impact_on_seo, recommendations_for_freshness. Compile full JSON with COMPLETE article content: Integrate all sections including freshness validation results and the full article text. Ensure no errors, validate schema compliance.",
+    description="Take inputs from ALL previous tasks including freshness validation and image generation prompt. CRITICAL: Include the COMPLETE ARTICLE TEXT (introduction, body paragraphs, conclusion) in the article section, not just metadata. Audit in detail: keyword_analysis (summary with metrics), readability_score (e.g., '65', with explanation), mobile_optimization (array of 4+ suggestions with benefits), backlink_opportunities (array of 3+ ideas with targets). CRITICAL: Include comprehensive freshness metrics in seo_audit: data_freshness_score, source_age_distribution, freshness_impact_on_seo, recommendations_for_freshness. Include the image_generation_prompt from the image task. Compile full JSON with COMPLETE article content: Integrate all sections including freshness validation results, the full article text, and the image generation prompt. Ensure no errors, validate schema compliance.",
     agent=seo_auditor,
-    expected_output="A single, valid JSON string matching the exact schema with COMPLETE article content (title, meta_description, introduction, body array, conclusion) and ENHANCED seo_audit section including detailed freshness metrics.",
+    expected_output="A single, valid JSON string matching the exact schema with COMPLETE article content (title, meta_description, introduction, body array, conclusion), ENHANCED seo_audit section including detailed freshness metrics, and image_generation_prompt for AI image creation.",
     output_pydantic=SEOArticleOutput,  # Enforce structured output
 )
 
-# Create the Crew: Hierarchical process for sequential execution with freshness validation
+# Create the Crew: Hierarchical process for sequential execution with freshness validation and image generation
 crew = Crew(
-    agents=[keyword_researcher, fact_researcher, freshness_agent, article_writer, seo_auditor],
-    tasks=[keyword_task, fact_task, freshness_task, write_task, audit_task],
-    process=Process.sequential,  # Run tasks in order: keywords → facts → freshness validation → writing → audit
+    agents=[keyword_researcher, fact_researcher, freshness_agent, article_writer, image_prompt_creator, seo_auditor],
+    tasks=[keyword_task, fact_task, freshness_task, write_task, image_task, audit_task],
+    process=Process.sequential,  # Run tasks in order: keywords → facts → freshness validation → writing → image prompt → audit
     verbose=True,  # Detailed logging
     memory=False,  # Disabled to avoid ChromaDB issues
     share_crew=False,  # Independent agents
@@ -273,13 +303,21 @@ if __name__ == "__main__":
     else:
         json_content = result
     
-    # If the content is a JSON string, parse it to Python object
+    # Handle different result types
     if isinstance(json_content, str):
         try:
             json_content = json.loads(json_content)
         except json.JSONDecodeError:
             print("❌ Error: Unable to parse JSON")
+            print(f"Raw content: {json_content[:500]}...")
             exit(1)
+    elif hasattr(json_content, 'dict'):
+        json_content = json_content.dict()
+    elif not isinstance(json_content, dict):
+        print("❌ Error: Unexpected result format")
+        print(f"Result type: {type(json_content)}")
+        print(f"Result content: {str(json_content)[:500]}...")
+        exit(1)
     
     print(json.dumps(json_content, indent=2, ensure_ascii=False))
     
