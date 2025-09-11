@@ -21,12 +21,13 @@
 
 import os
 import json
-from typing import Dict, Any
+from typing import Dict, Any, List
 from crewai import Agent, Task, Crew, Process
-# from crewai_tools import SerperDevTool  # For web search - enable when available
 from langchain_openai import ChatOpenAI  # Compatible with DeepSeek via custom config
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
+from free_search_tools import FreeSearchCrewAITool  # Recherche web gratuite sans API
+from freshness_validator import DataFreshnessValidator  # Validation fraîcheur données
 
 # Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
@@ -47,12 +48,17 @@ llm = ChatOpenAI(
     max_tokens=8000,  # Increased for longer, more detailed responses to support 1000-1500 word articles
 )
 
-# Search Tool Setup - Placeholder for future integration
-# serper_tool = SerperDevTool()  # Uncomment and add to agents when crewai-tools supports it
-# tools = [serper_tool]
+# Configuration de l'outil de recherche gratuit (AUCUNE API REQUISE!)
+print("🔧 Initialisation de l'outil de recherche gratuit...")
+free_search_tool = FreeSearchCrewAITool()
+print("📅 Initialisation du validateur de fraîcheur...")
+freshness_validator = DataFreshnessValidator()
+tools = [free_search_tool]
+print("✅ Outil de recherche gratuit prêt (RSS + DuckDuckGo + Sources publiques)")
+print("✅ Validateur de fraîcheur des données prêt")
 
 # Define the Original Prompt/Headline
-HEADLINE = "Trump reportedly asks EU to levy 100% tariffs on India and China; Ozempic maker Novo to cut 9,000 jobs – business live."
+HEADLINE = "Trump’s pressure on Europe to slap 100% tariffs on India and China raises eyebrows"
 PROMPT_INSTRUCTIONS = f"""
 Generate a comprehensive, SEO-optimized business news article in English based on the headline: '{HEADLINE}'.
 Use available knowledge or search tools to gather recent, reliable sources for facts, context, expert analysis, and global impacts on trade, pharmaceuticals, and economies.
@@ -76,7 +82,7 @@ After the article, provide an SEO audit: Analyze keyword placement/density, read
 
 Output the entire response as a structured JSON object with the following keys:
 - "keyword_research": An object containing arrays for "primary_keywords", "long_tail_phrases", and "lsi_terms". Each item in the arrays should include details like estimated search volume, competition level, and incorporation suggestions.
-- "article": An object with keys for "title", "meta_description", "introduction" (string, 200-300 words), "body" (array of 10+ strings for sections/paragraphs, including headings as H2/H3/H4 marked strings), and "conclusion" (string, 200-300 words).
+- "article": An object with keys for "title", "meta_description", "introduction" (string, 200-300 words), "body" (array of 10+ strings for sections/paragraphs, including headings as H2/H3/H4 marked strings), and "conclusion" (string, 200-300 words). CRITICAL: Include the full article text content, not just metadata.
 - "seo_suggestions": An object with keys for "internal_links" (array of 3-5 suggestions), "external_links" (array of 2-3 source URLs), and "image_ideas" (array of 3-5 objects each with "description" and "alt_text").
 - "seo_audit": An object with keys for "keyword_analysis" (detailed string summary of placement/density), "readability_score" (number or string, e.g., '62'), "mobile_optimization" (array of 4+ suggestions), and "backlink_opportunities" (array of 3+ ideas).
 
@@ -84,19 +90,26 @@ Ensure the JSON is valid, clean, and comprehensive. Current date: September 10, 
 """
 
 # Pydantic model for structured JSON output to ensure validity
+class ArticleContent(BaseModel):
+    title: str = Field(..., description="Article title")
+    meta_description: str = Field(..., description="SEO meta description")
+    introduction: str = Field(..., description="Article introduction text (200-300 words)")
+    body: List[str] = Field(..., description="Array of article body sections including H2/H3/H4 headings")
+    conclusion: str = Field(..., description="Article conclusion text (200-300 words)")
+
 class SEOArticleOutput(BaseModel):
     keyword_research: Dict[str, Any] = Field(..., description="Keyword research section")
-    article: Dict[str, Any] = Field(..., description="Article structure")
+    article: ArticleContent = Field(..., description="Complete article structure with full content")
     seo_suggestions: Dict[str, Any] = Field(..., description="SEO suggestions")
-    seo_audit: Dict[str, Any] = Field(..., description="SEO audit")
+    seo_audit: Dict[str, Any] = Field(..., description="SEO audit with freshness metrics")
 
 # Agent 1: Keyword Researcher
 # Role: Perform keyword research using web search for volumes, competition, etc.
 keyword_researcher = Agent(
     role="SEO Keyword Researcher",
-    goal="Conduct thorough keyword research for the given headline, identifying 5-10 primary keywords, 10-15 long-tail phrases, and LSI terms with estimated search volumes, competition levels (low/medium/high), and natural incorporation suggestions. Focus on business, trade, pharma topics. Expand with related sub-topics for broader coverage.",
-    backstory="You are an expert SEO analyst specializing in business news keywords. You estimate volumes based on your knowledge and experience (e.g., 50k for high-volume terms like 'tariffs on China'). Provide detailed suggestions for integration across article sections.",
-    tools=[],  # Placeholder for tools=[serper_tool]
+    goal="Conduct thorough keyword research for the given headline, identifying 5-10 primary keywords, 10-15 long-tail phrases, and LSI terms with estimated search volumes, competition levels (low/medium/high), and natural incorporation suggestions. Focus on business, trade, pharma topics. Expand with related sub-topics for broader coverage. USE the search tool to get real-time trend data!",
+    backstory="You are an expert SEO analyst specializing in business news keywords. You have access to real-time web search tools to validate keyword trends and competition. Use the free search tool to check current news and trends around the topic.",
+    tools=tools,  # Utilise l'outil de recherche gratuit
     llm=llm,
     verbose=True,
     allow_delegation=False,
@@ -104,30 +117,47 @@ keyword_researcher = Agent(
 
 # Task for Keyword Research
 keyword_task = Task(
-    description=f"Research keywords for headline: '{HEADLINE}'. Based on your knowledge, identify 5-10 primary keywords, 10-15 long-tail phrases, and LSI terms with estimated search volumes, competition levels (low/medium/high), and natural incorporation suggestions. Focus on business, trade, pharma topics. Expand list with variations for comprehensive SEO.",
+    description=f"FIRST: Use the search tool to find current trending topics related to: '{HEADLINE}'. Search for terms like 'Trump tariffs', 'EU China trade', 'Novo Nordisk layoffs', 'Ozempic market'. Then analyze the search results to identify 5-10 primary keywords, 10-15 long-tail phrases, and LSI terms based on what's currently trending in news. Include estimated search volumes, competition levels, and natural incorporation suggestions.",
     agent=keyword_researcher,
-    expected_output="A dictionary-like structure with keyword_research key containing arrays of objects with keyword, volume, competition, suggestions. Aim for detailed, expansive entries.",
+    expected_output="A comprehensive keyword analysis based on real search data, including trending terms found in current news sources.",
 )
 
 # Agent 2: Fact and Deep Researcher
 # Role: Gather facts, sources, expert analysis via deep web search. Enhanced for more depth.
 fact_researcher = Agent(
     role="Business News Fact Researcher",
-    goal="Perform in-depth research on the headline topic. Collect extensive facts on Trump tariffs (EU 100% on China/India, Russian oil context, negotiation history), Novo Nordisk layoffs (9,000 jobs, Ozempic production, competition with Eli Lilly, supply chain details). Include expert analysis from economists/pharma analysts, trade stats (e.g., GDP impacts, bilateral volumes €500B+), pharma market data ($100B+ by 2030), historical parallels (e.g., 2018 tariffs), and global ripple effects. Provide multiple angles: US-EU relations, Asian economies, investor reactions. Date: Sept 10, 2025. Structure for expansive article use.",
-    backstory="You are a seasoned business journalist with extensive knowledge of global trade, pharmaceuticals, and economic impacts. You provide well-informed, detailed analysis based on your expertise, including projections and interconnections.",
-    tools=[],  # Placeholder for tools=[serper_tool]
+    goal="Perform in-depth research on the headline topic using the FREE search tool to get real-time data! Collect extensive facts on Trump tariffs (EU 100% on China/India, Russian oil context, negotiation history), Novo Nordisk layoffs (9,000 jobs, Ozempic production, competition with Eli Lilly, supply chain details). Search for recent news, expert analysis, trade statistics, market data, and economic impacts. Get current information from RSS feeds and news sources.",
+    backstory="You are a seasoned business journalist with access to real-time web search tools. You actively use the search functionality to gather the most current information from news sources, RSS feeds, and public data before writing your analysis.",
+    tools=tools,  # Utilise l'outil de recherche gratuit
     llm=llm,
     verbose=True,
     allow_delegation=False,
 )
 
 fact_task = Task(
-    description=f"Research the headline topic: 'Trump EU tariffs China India September 2025' and 'Novo Nordisk 9000 job cuts Ozempic 2025 reasons impacts'. Based on your knowledge, gather extensive facts, analysis, and data (e.g., trade volumes €500B, market $100B by 2030, job cut rationales like cost pressures). Include historical context, expert quotes, stakeholder views, and future scenarios. Structure for article: hooks, detailed body data (with sub-sections), citations, and interconnections (e.g., tariff effects on pharma imports). Aim for a comprehensive report to support 1000+ word article.",
+    description=f"MANDATORY: Use the search tool extensively! Search for: 'Trump tariffs EU China India 2025', 'Novo Nordisk layoffs 9000 jobs', 'Ozempic competition Eli Lilly', 'pharmaceutical market trends 2025'. Gather real-time information from news sources, RSS feeds, and recent publications. Extract facts, expert quotes, market data, trade statistics, and economic impacts. Cross-reference multiple sources and include recent developments, stakeholder reactions, and market analysis. Build a comprehensive fact base with current citations.",
     agent=fact_researcher,
-    expected_output="An expansive report with sections: Trade Facts (detailed), Pharma Facts (detailed), Expert Analysis (multi-perspective), Global Impacts (bullets/lists/tables with data points), Historical Context, Future Projections.",
+    expected_output="A fact-rich report based on current web search results, including recent news articles, market data, expert opinions, and up-to-date statistics with proper source citations.",
 )
 
-# Agent 3: Article Writer
+# Agent 3: Data Freshness Validator
+# Role: Valider la fraîcheur des données et recommander des améliorations
+freshness_agent = Agent(
+    role="Data Freshness Validator",
+    goal="Analyser la fraîcheur des données collectées et s'assurer que l'article utilisera uniquement des informations récentes et pertinentes. Identifier les sources obsolètes et recommander des recherches complémentaires si nécessaire. Calculer des métriques de fraîcheur pour l'audit SEO final.",
+    backstory="Vous êtes un expert en validation de données avec une expertise particulière dans la fraîcheur du contenu pour le SEO. Vous savez que Google privilégie le contenu récent et à jour. Vous analysez les dates de publication, évaluez la pertinence temporelle des informations et filtrez les données obsolètes.",
+    llm=llm,
+    verbose=True,
+    allow_delegation=False,
+)
+
+freshness_task = Task(
+    description="ANALYSER la fraîcheur de toutes les données collectées par l'agent de recherche. Identifier les sources datées de plus de 30 jours pour les actualités, 90 jours pour les analyses business. Calculer un score de fraîcheur global. Recommander des recherches supplémentaires si trop de sources sont obsolètes. Préparer un rapport de fraîcheur avec métriques pour l'audit SEO (âge moyen des sources, pourcentage de sources récentes, score de fraîcheur global).",
+    agent=freshness_agent,
+    expected_output="Un rapport de validation de fraîcheur avec score global, distribution par âge des sources, recommandations d'amélioration, et métriques détaillées pour l'audit SEO final.",
+)
+
+# Agent 4: Article Writer
 # Role: Generate the full article using research. Enhanced for length and structure.
 article_writer = Agent(
     role="Professional Business Article Writer",
@@ -144,29 +174,29 @@ write_task = Task(
     expected_output="A well-structured article with clear narrative flow: title, meta_description, introduction (engaging hook + context), body (logical progression of 6-8 coherent sections), conclusion (summary + outlook). Each section should build naturally on the previous one.",
 )
 
-# Agent 4: SEO Auditor and JSON Formatter
-# Role: Audit SEO, ensure structure, output valid JSON. Enhanced for detailed audit.
+# Agent 5: SEO Auditor and JSON Formatter
+# Role: Audit SEO, ensure structure, output valid JSON. Enhanced for detailed audit with freshness metrics.
 seo_auditor = Agent(
     role="SEO Auditor and JSON Structurer",
-    goal="Analyze the generated content in depth: Calculate keyword density/placement (1-2%, with breakdowns), estimate Flesch score (target 60+, with factors), suggest mobile opts/backlinks with rationale. Format everything into valid JSON per schema: keyword_research, article, seo_suggestions, seo_audit. Validate cleanliness/comprehensiveness, ensure length targets met.",
-    backstory="You are an SEO specialist and data validator, ensuring outputs meet best practices, JSON schema, and expanded content requirements.",
+    goal="Analyze the generated content in depth: Calculate keyword density/placement (1-2%, with breakdowns), estimate Flesch score (target 60+, with factors), suggest mobile opts/backlinks with rationale. INTEGRATE freshness validation results into the SEO audit - include data freshness scores, source age distribution, and freshness impact on SEO performance. Format everything into valid JSON per schema: keyword_research, article, seo_suggestions, seo_audit (with freshness metrics).",
+    backstory="You are an SEO specialist and data validator with expertise in content freshness validation. You understand that Google rewards fresh, up-to-date content and you incorporate data age and freshness metrics into comprehensive SEO audits.",
     llm=llm,
     verbose=True,
     allow_delegation=False,
 )
 
 audit_task = Task(
-    description="Take inputs from previous tasks. Audit in detail: keyword_analysis (summary with metrics), readability_score (e.g., '65', with explanation), mobile_optimization (array of 4+ suggestions with benefits), backlink_opportunities (array of 3+ ideas with targets). Compile full JSON: Integrate all sections expansively. Ensure no errors, paraphrase/expand if needed for coherence and length.",
+    description="Take inputs from ALL previous tasks including freshness validation. CRITICAL: Include the COMPLETE ARTICLE TEXT (introduction, body paragraphs, conclusion) in the article section, not just metadata. Audit in detail: keyword_analysis (summary with metrics), readability_score (e.g., '65', with explanation), mobile_optimization (array of 4+ suggestions with benefits), backlink_opportunities (array of 3+ ideas with targets). CRITICAL: Include comprehensive freshness metrics in seo_audit: data_freshness_score, source_age_distribution, freshness_impact_on_seo, recommendations_for_freshness. Compile full JSON with COMPLETE article content: Integrate all sections including freshness validation results and the full article text. Ensure no errors, validate schema compliance.",
     agent=seo_auditor,
-    expected_output="A single, valid JSON string matching the exact schema in instructions. Use Pydantic if possible for validation.",
+    expected_output="A single, valid JSON string matching the exact schema with COMPLETE article content (title, meta_description, introduction, body array, conclusion) and ENHANCED seo_audit section including detailed freshness metrics.",
     output_pydantic=SEOArticleOutput,  # Enforce structured output
 )
 
-# Create the Crew: Hierarchical process for sequential execution
+# Create the Crew: Hierarchical process for sequential execution with freshness validation
 crew = Crew(
-    agents=[keyword_researcher, fact_researcher, article_writer, seo_auditor],
-    tasks=[keyword_task, fact_task, write_task, audit_task],
-    process=Process.sequential,  # Run tasks in order, passing context (maintains initial logic)
+    agents=[keyword_researcher, fact_researcher, freshness_agent, article_writer, seo_auditor],
+    tasks=[keyword_task, fact_task, freshness_task, write_task, audit_task],
+    process=Process.sequential,  # Run tasks in order: keywords → facts → freshness validation → writing → audit
     verbose=True,  # Detailed logging
     memory=False,  # Disabled to avoid ChromaDB issues
     share_crew=False,  # Independent agents

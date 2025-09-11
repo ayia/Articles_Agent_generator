@@ -4,3 +4,10 @@ langchain-openai==0.2.1
 litellm==1.74.9
 pydantic==2.11.5
 python-dotenv==1.0.1
+# Dépendances pour la recherche web gratuite (AUCUNE API REQUISE)
+requests==2.31.0
+beautifulsoup4==4.12.2
+feedparser==6.0.10
+lxml==4.9.3
+# Dépendances pour la validation de fraîcheur des données
+python-dateutil==2.8.2
