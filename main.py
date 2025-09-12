@@ -62,7 +62,7 @@ print("Data freshness validator ready")
 print("Adaptive headline analyzer ready")
 
 # Define the Original Prompt/Headline
-HEADLINE = "Australian Dollar climbs amid improved market sentiment"
+HEADLINE = "Gold Price Forecast: XAU/USD attempts another run toward record highs, will it succeed?"
 
 # AUTOMATIC SEARCH TERMS GENERATION (NO MORE HARDCODING!)
 print("Analyzing headline automatically...")
