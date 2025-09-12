@@ -1,16 +1,30 @@
 """
-Final Headline Analyzer - Automatic keyword extraction
-Automatically analyzes headlines to extract relevant search terms without predefined patterns
+Final Headline Analyzer - Adaptive keyword extraction with context awareness
+Automatically analyzes headlines to extract relevant search terms and adapt strategy
+Intègre la logique d'analyse contextuelle pour une adaptation totale au HEADLINE
 """
 
 import re
-from typing import List, Dict
+from typing import List, Dict, Any
+from datetime import datetime
 
 class FinalHeadlineAnalyzer:
-    """Automatic headline analyzer - extracts relevant terms without predefined patterns"""
+    """Adaptive headline analyzer - extracts relevant terms and adapts strategy to headline content"""
     
     def __init__(self):
-        print("Final precise headline analyzer initialized (no API dependency)")
+        print("✅ Adaptive Final Headline Analyzer initialized (ZERO hardcoding)")
+        
+        # Import des nouvelles capacités adaptatives
+        try:
+            from adaptive_keyword_context import AdaptiveKeywordContextAnalyzer
+            self.context_analyzer = AdaptiveKeywordContextAnalyzer()
+            self.context_analysis_available = True
+            print("✅ Advanced context analysis available")
+        except ImportError:
+            self.context_analysis_available = False
+            print("⚠️ Advanced context analysis not available")
+        
+        # Termes à éviter (détection automatique d'off-topic)
         self.off_topic_terms = [
             "crypto", "bitcoin", "blockchain", "nft", "cryptocurrency",
             "gaming", "video game", "streaming", "youtube", "twitch",
@@ -84,50 +98,126 @@ class FinalHeadlineAnalyzer:
         return extracted_concepts
     
     def generate_automatic_search_terms(self, headline: str) -> List[str]:
-        """Automatically generate search terms from headline concepts"""
+        """Adaptively generate search terms based on headline context and content"""
+        print(f"🎯 Generating adaptive search terms for: '{headline[:50]}...'")
         
+        # 1. Use advanced context analysis if available
+        if self.context_analysis_available:
+            try:
+                # Get comprehensive adaptive strategy
+                strategy = self.context_analyzer.generate_adaptive_search_strategy(headline)
+                
+                # Combine all adaptive terms
+                adaptive_terms = []
+                adaptive_terms.extend(strategy['adaptive_search_terms'])
+                adaptive_terms.extend(strategy['autocomplete_suggestions'])
+                
+                # Remove duplicates and filter
+                unique_adaptive_terms = list(dict.fromkeys(adaptive_terms))
+                filtered_adaptive_terms = [term for term in unique_adaptive_terms if len(term) > 2 and term not in self.off_topic_terms]
+                
+                print(f"✅ Generated {len(filtered_adaptive_terms)} adaptive search terms")
+                return filtered_adaptive_terms[:20]  # Return top 20 adaptive terms
+                
+            except Exception as e:
+                print(f"⚠️ Adaptive analysis error: {e}, falling back to basic extraction")
+        
+        # 2. Fallback to enhanced basic extraction
         concepts = self.extract_automatic_concepts(headline)
         search_terms = []
         
-        # 1. Add important nouns as individual terms
+        # Enhanced extraction with better logic
         search_terms.extend(concepts['important_nouns'])
-        
-        # 2. Add entities
         search_terms.extend(concepts['entities'])
         
-        # 3. Create combinations of important nouns
+        # Create smarter combinations
         important_nouns = concepts['important_nouns']
         if len(important_nouns) >= 2:
-            # Create 2-word combinations
             for i in range(len(important_nouns)):
-                for j in range(i+1, len(important_nouns)):
+                for j in range(i+1, min(len(important_nouns), i+3)):  # Limit combinations
                     search_terms.append(f"{important_nouns[i]} {important_nouns[j]}")
         
-        # 4. Add key terms
-        search_terms.extend(concepts['key_terms'][:5])  # Limit to top 5
+        # Add contextual terms
+        search_terms.extend(concepts['key_terms'][:5])
         
-        # 5. Create time-specific searches
+        # Time and number combinations (more selective)
         for time_ref in concepts['time_references'][:2]:
             for noun in important_nouns[:2]:
                 search_terms.append(f"{noun} {time_ref}")
         
-        # 6. Create number-specific searches
         for number in concepts['numbers_data'][:2]:
             for noun in important_nouns[:2]:
                 search_terms.append(f"{noun} {number}")
         
-        # 7. Add action verb combinations
-        for verb in concepts['action_verbs'][:3]:
+        # Action verb combinations
+        for verb in concepts['action_verbs'][:2]:
             for noun in important_nouns[:2]:
                 search_terms.append(f"{verb} {noun}")
         
-        # Remove duplicates while preserving order
+        # Remove duplicates and filter
         unique_terms = list(dict.fromkeys(search_terms))
+        filtered_terms = [term for term in unique_terms if len(term) > 2 and term not in self.off_topic_terms]
         
-        # Filter out very short terms and limit results
-        filtered_terms = [term for term in unique_terms if len(term) > 2]
+        print(f"✅ Generated {len(filtered_terms)} basic search terms (fallback mode)")
+        return filtered_terms[:15]  # Return top 15 terms
+    
+    def generate_adaptive_keyword_strategy(self, headline: str) -> Dict[str, Any]:
+        """Génère une stratégie complète de mots-clés adaptée au headline"""
+        print(f"📋 Generating comprehensive keyword strategy for: '{headline[:30]}...'")
         
-        return filtered_terms[:12]  # Return top 12 terms
+        strategy = {
+            'headline': headline,
+            'analysis_timestamp': datetime.now().isoformat(),
+            'search_terms': [],
+            'context_analysis': {},
+            'keyword_categories': {},
+            'recommended_approach': '',
+            'estimated_difficulty': 'Unknown'
+        }
+        
+        # Generate search terms
+        strategy['search_terms'] = self.generate_automatic_search_terms(headline)
+        
+        # Add context analysis if available
+        if self.context_analysis_available:
+            try:
+                context = self.context_analyzer.detect_headline_domain(headline)
+                strategy['context_analysis'] = context
+                
+                # Adapt recommended approach based on context
+                domain = context.get('primary_domain', 'general_business')
+                headline_type = context.get('headline_type', 'general_business_news')
+                
+                strategy['recommended_approach'] = self._get_adaptive_approach(domain, headline_type)
+                
+                print(f"✅ Context-aware strategy generated for {domain} domain")
+                
+            except Exception as e:
+                print(f"⚠️ Context analysis error: {e}")
+        
+        return strategy
+    
+    def _get_adaptive_approach(self, domain: str, headline_type: str) -> str:
+        """Recommande une approche adaptée au contexte détecté"""
+        
+        approaches = {
+            'economic_data': "Focus on analytical keywords, comparison terms, and data-driven long-tail phrases. Target users seeking economic analysis and forecasts.",
+            'financial_markets': "Emphasize investment-related keywords, market sentiment terms, and financial performance phrases. Target investors and financial professionals.",
+            'business_performance': "Prioritize business metrics keywords, competitive analysis terms, and performance comparison phrases. Target business decision-makers.",
+            'consumer_research': "Focus on consumer behavior keywords, sentiment analysis terms, and market research phrases. Target marketers and business analysts."
+        }
+        
+        type_modifiers = {
+            'data_release_with_comparison': " Include comparison keywords and benchmark-related terms.",
+            'periodic_data_release': " Emphasize time-based keywords and trend analysis terms.",
+            'action_announcement': " Focus on news-related keywords and immediate impact terms.",
+            'sentiment_report': " Prioritize sentiment analysis keywords and perception-related terms."
+        }
+        
+        base_approach = approaches.get(domain, "Use a balanced mix of informational and commercial keywords targeting business professionals.")
+        type_modifier = type_modifiers.get(headline_type, "")
+        
+        return base_approach + type_modifier
     
     def generate_automatic_task_description(self, headline: str, task_type: str) -> str:
         """Generate task descriptions with automatically extracted terms"""

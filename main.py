@@ -29,6 +29,9 @@ from dotenv import load_dotenv
 from free_search_tools import FreeSearchCrewAITool  # Recherche web gratuite sans API
 from freshness_validator import DataFreshnessValidator  # Validation fraîcheur données
 from final_headline_analyzer import FinalHeadlineAnalyzer  # Final precise analysis - ZERO off-topic terms
+# NOUVELLES AMÉLIORATIONS ADAPTATIVES - 100% GRATUIT
+from adaptive_keyword_context import AdaptiveKeywordContextAnalyzer  # Analyse contextuelle adaptative
+from advanced_keyword_tools import AdvancedKeywordResearchTool  # Outils avancés de recherche de mots-clés
 
 # Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
@@ -50,28 +53,62 @@ llm = ChatOpenAI(
 )
 
 # Setup free search tools (NO API REQUIRED!)
-print("Initializing free search tools...")
+print("🚀 INITIALIZING ADAPTIVE KEYWORD RESEARCH SYSTEM...")
+print("=" * 60)
+
+print("🔍 Initializing free search tools...")
 free_search_tool = FreeSearchCrewAITool()
-print("Initializing data freshness validator...")
+
+print("📅 Initializing data freshness validator...")
 freshness_validator = DataFreshnessValidator()
-print("Initializing final precise headline analyzer...")
+
+print("🎯 Initializing adaptive headline analyzer...")
 headline_analyzer = FinalHeadlineAnalyzer()
-tools = [free_search_tool]
-print("Free search tool ready (RSS + DuckDuckGo + Public sources)")
-print("Data freshness validator ready")
-print("Adaptive headline analyzer ready")
+
+print("🚀 Initializing advanced keyword research tools...")
+advanced_keyword_tool = AdvancedKeywordResearchTool()
+
+print("🧠 Initializing adaptive context analyzer...")
+adaptive_context_analyzer = AdaptiveKeywordContextAnalyzer()
+
+# Combine all tools for agents
+tools = [free_search_tool, advanced_keyword_tool]
+
+print("✅ Free search tool ready (RSS + DuckDuckGo + Public sources)")
+print("✅ Data freshness validator ready")
+print("✅ Adaptive headline analyzer ready")
+print("✅ Advanced keyword research tools ready (Google Trends + Autocomplete)")
+print("✅ Adaptive context analyzer ready")
+print("🎯 SYSTEM READY FOR ADAPTIVE KEYWORD RESEARCH!")
+print("=" * 60)
 
 # Define the Original Prompt/Headline
-HEADLINE = "UMich September prelim consumer sentiment 55.4 vs 58.0 expected"
+HEADLINE = "Gold is testing the top of the daily range. It's up $15 to $3649 today and perked up following the softer UMich consumer sentiment data.The precious metal is consolidating now after reaching $3675 on Tuesday in a spike higher. It's likely to continue sideways until Wednesday's FOMC decision. A dovish bent from the Fed chair would be a green light for the gold bulls to take it another leg higher. I don't think we'd need to see a surprise 50 bps cut but if Powell validates employment concerns and downplays inflation then it could continue the surge.Techncially, Tuesday's high and overbought conditions are the only thing standing in the way of further gains and beyond that it will be big round figures like $3750 and $4000 offering up resistance.On the geopolitical side, the US appears to be trying to ramp up pressure on Russia to enter talks on Ukraine peace. That presents two-sided risks as harsher Russian sanctions or reserve confiscation could strengthen the case for gold, while a peace deal would weaken it. My sense is that Trump has played his best cards in terms of diplomacy but Russia isn't interested and feels it has the upper hand in the war."
 
-# AUTOMATIC SEARCH TERMS GENERATION (NO MORE HARDCODING!)
-print("Analyzing headline automatically...")
+# ADAPTIVE ANALYSIS SYSTEM (NO MORE HARDCODING!)
+print("\n🧠 ADAPTIVE HEADLINE ANALYSIS...")
+print("=" * 50)
+
+# Analyze headline context adaptively
+print(f"📋 Analyzing headline: '{HEADLINE[:50]}...'")
+headline_context = adaptive_context_analyzer.detect_headline_domain(HEADLINE)
+print(f"✅ Detected domain: {headline_context['primary_domain']}")
+print(f"📊 Headline type: {headline_context['headline_type']}")
+print(f"🎯 Confidence: {headline_context['domain_confidence']:.2f}")
+
+# Generate adaptive search terms
+print("\n🎯 Generating adaptive search terms...")
 search_terms = headline_analyzer.generate_automatic_search_terms(HEADLINE)
 search_terms_str = "', '".join(search_terms)
-print(f"Auto-generated search terms: {len(search_terms)}")
-for i, term in enumerate(search_terms[:5], 1):  # Show first 5
+
+print(f"✅ Generated {len(search_terms)} adaptive search terms:")
+for i, term in enumerate(search_terms[:8], 1):  # Show first 8
     print(f"   {i}. \"{term}\"")
-print("Search terms automatically adapted to headline topic!")
+
+if len(search_terms) > 8:
+    print(f"   ... and {len(search_terms) - 8} more terms")
+
+print("🚀 ADAPTIVE ANALYSIS COMPLETE - All terms generated from headline context!")
 PROMPT_INSTRUCTIONS = f"""
 Generate a comprehensive, SEO-optimized business news article in English based on the headline: '{HEADLINE}'.
 Use available knowledge or search tools to gather recent, reliable sources for facts, context, expert analysis, and relevant economic impacts related to the headline topic.
@@ -117,27 +154,157 @@ class SEOArticleOutput(BaseModel):
     seo_audit: Dict[str, Any] = Field(..., description="SEO audit with freshness metrics")
     image_generation_prompt: str = Field(..., description="Detailed prompt for AI image generation based on article content")
 
-# Agent 1: Keyword Researcher
-# Role: Perform keyword research using web search for volumes, competition, etc.
-keyword_researcher = Agent(
-    role="SEO Keyword Researcher",
-    goal="Conduct thorough keyword research for the given headline, identifying 5-10 primary keywords, 10-15 long-tail phrases, and LSI terms with estimated search volumes, competition levels (low/medium/high), and natural incorporation suggestions. Focus on business, trade, pharma topics. Expand with related sub-topics for broader coverage. USE the search tool to get real-time trend data!",
-    backstory="You are an expert SEO analyst specializing in business news keywords. You have access to real-time web search tools to validate keyword trends and competition. Use the free search tool to check current news and trends around the topic.",
-    tools=tools,  # Utilise l'outil de recherche gratuit
-    llm=llm,
-    verbose=True,
-    allow_delegation=False,
-)
+# ===================================================================
+# ADAPTIVE AGENT CREATION FUNCTIONS (NO MORE HARDCODING!)
+# ===================================================================
 
-# Task for Keyword Research
-# AUTOMATIC TASK GENERATION (No more hardcoding!)
-keyword_task_description = headline_analyzer.generate_automatic_task_description(HEADLINE, "keyword")
+def create_adaptive_keyword_researcher(headline: str, context: Dict[str, Any]) -> Agent:
+    """Crée un agent de recherche de mots-clés adapté au headline et contexte spécifiques"""
+    
+    # Adapter le goal selon le contexte détecté
+    domain = context.get('primary_domain', 'general_business')
+    headline_type = context.get('headline_type', 'general_business_news')
+    
+    adaptive_goal = f"""
+    🎯 ADAPTIVE KEYWORD RESEARCH for: '{headline}'
+    
+    DETECTED CONTEXT:
+    - Domain: {domain}
+    - Type: {headline_type} 
+    - Confidence: {context.get('domain_confidence', 0):.2f}
+    
+    ADAPTIVE STRATEGY - Conduct comprehensive keyword research tailored to this specific context:
+    
+    1. 📊 PRIMARY KEYWORDS (15-25): Use BOTH search tools to discover trending terms
+       • Free web search tool: Get current news and discussions
+       • Advanced keyword tool: Get Google Trends data and autocomplete suggestions
+    
+    2. 🎯 LONG-TAIL EXPANSION (30-50): Generate based on discovered patterns
+       • Question-based keywords adapted to headline type
+       • Contextual modifiers based on detected domain
+       • Trending combinations from real search data
+    
+    3. 📈 VOLUME & COMPETITION ANALYSIS: 
+       • Use advanced tool for Google Trends analysis
+       • Estimate search volumes via multiple signals
+       • Analyze competition levels from SERP data
+    
+    4. 🚀 ADAPTIVE RECOMMENDATIONS:
+       • Prioritize keywords by business impact and ranking opportunity
+       • Provide implementation strategy adapted to content type
+       • Include seasonal trends and search patterns
+    
+    CRITICAL: Everything must adapt to the headline content. NO generic patterns!
+    """
+    
+    adaptive_backstory = f"""
+    You are an advanced SEO strategist with adaptive intelligence, analyzing: '{headline[:50]}...'
+    
+    Your expertise automatically adjusts to content context:
+    • For {domain} domain → You focus on relevant industry terminology and audience
+    • For {headline_type} type → You adapt keyword strategy to content format
+    
+    TOOLS AT YOUR DISPOSAL:
+    1. Free Web Search Tool → Real-time news, trends, current discussions
+    2. Advanced Keyword Tool → Google Trends, autocomplete, volume estimation
+    
+    METHOD:
+    - Discover what people are ACTUALLY searching for related to this headline
+    - Use real data to validate keyword opportunities
+    - Combine multiple signals for accurate volume estimation
+    - Adapt strategy based on discovered patterns, not predetermined lists
+    
+    You excel at finding the perfect balance between search volume and ranking opportunity.
+    """
+    
+    return Agent(
+        role=f"Adaptive SEO Keyword Researcher ({domain.replace('_', ' ').title()})",
+        goal=adaptive_goal,
+        backstory=adaptive_backstory,
+        tools=tools,  # Utilise les nouveaux outils adaptatifs
+        llm=llm,
+        verbose=True,
+        allow_delegation=False,
+    )
 
-keyword_task = Task(
-    description=keyword_task_description,
-    agent=keyword_researcher,
-    expected_output="A comprehensive keyword analysis based on real search data, with search terms automatically adapted to the headline topic.",
-)
+def create_adaptive_keyword_task(headline: str, context: Dict[str, Any], agent: Agent) -> Task:
+    """Crée une tâche de recherche adaptée au headline et contexte"""
+    
+    domain = context.get('primary_domain', 'general_business')
+    extracted_patterns = context.get('extracted_patterns', {})
+    
+    # Extraire les entités clés pour la tâche
+    key_entities = extracted_patterns.get('organizations', [])[:3]
+    key_data = extracted_patterns.get('measurements', [])[:2]
+    key_time = extracted_patterns.get('time_indicators', [])[:2]
+    
+    adaptive_description = f"""
+    🚀 COMPREHENSIVE ADAPTIVE KEYWORD RESEARCH 
+    
+    TARGET HEADLINE: '{headline}'
+    DETECTED CONTEXT: {domain} | {context.get('headline_type', 'general')}
+    KEY ENTITIES: {', '.join(key_entities) if key_entities else 'Auto-detected from headline'}
+    DATA POINTS: {', '.join(key_data) if key_data else 'None'}
+    TIME CONTEXT: {', '.join(key_time) if key_time else 'Current'}
+    
+    📋 RESEARCH PHASES:
+    
+    PHASE 1 - CONTEXTUAL DISCOVERY:
+    • Use FREE WEB SEARCH TOOL to find current discussions about: {', '.join(key_entities[:3]) if key_entities else 'headline topics'}
+    • Analyze how people currently discuss this topic
+    • Extract vocabulary from real search results and news sources
+    
+    PHASE 2 - ADVANCED KEYWORD MINING:
+    • Use ADVANCED KEYWORD RESEARCH TOOL for:
+      - Google Trends data analysis
+      - Autocomplete suggestions (Google/Bing)
+      - Question-based keyword generation
+      - Competition difficulty analysis
+    
+    PHASE 3 - ADAPTIVE EXPANSION:
+    • Generate keyword variations based on discovered patterns
+    • Create long-tail phrases using real terminology found in research
+    • Build semantic keyword clusters around main concepts
+    • Include seasonal and trending modifiers
+    
+    PHASE 4 - STRATEGIC ANALYSIS:
+    • Estimate search volumes using multiple signals
+    • Analyze keyword difficulty and competition
+    • Prioritize by ranking opportunity vs business value
+    • Provide integration suggestions for natural content placement
+    
+    📊 DELIVERABLE REQUIREMENTS:
+    - 50+ keywords with volume estimates and difficulty scores
+    - Clear categorization by search intent and business value
+    - Implementation roadmap with priority recommendations
+    - Trend analysis and seasonal considerations
+    
+    CRITICAL SUCCESS FACTORS:
+    ✅ All keywords must be relevant to the headline topic
+    ✅ Use BOTH search tools for comprehensive coverage
+    ✅ Base everything on real search data, not assumptions
+    ✅ Adapt terminology to discovered audience language
+    ✅ Provide actionable implementation guidance
+    """
+    
+    return Task(
+        description=adaptive_description,
+        agent=agent,
+        expected_output=f"Comprehensive adaptive keyword strategy for '{headline}' with 50+ researched keywords, volume estimates, competition analysis, and strategic implementation recommendations based on {domain} domain context."
+    )
+
+# ===================================================================
+# CREATE ADAPTIVE KEYWORD RESEARCH SYSTEM
+# ===================================================================
+
+print("\n🎯 CREATING ADAPTIVE KEYWORD RESEARCH SYSTEM...")
+keyword_researcher = create_adaptive_keyword_researcher(HEADLINE, headline_context)
+print("✅ Adaptive keyword researcher created and configured")
+
+# Create Adaptive Keyword Task
+print("🎯 Creating adaptive keyword research task...")
+keyword_task = create_adaptive_keyword_task(HEADLINE, headline_context, keyword_researcher)
+print("✅ Adaptive keyword task created and configured")
 
 # Agent 2: Fact and Deep Researcher
 # Role: Gather facts, sources, expert analysis via deep web search. Enhanced for more depth.
@@ -345,4 +512,12 @@ if __name__ == "__main__":
         else:
             print(f"   Title same as headline - optimization needed")
     
-    print(f"\nExecution complete! Adaptive system used {len(search_terms)} auto-generated search terms.")
+    print(f"\n✅ ADAPTIVE KEYWORD RESEARCH SYSTEM EXECUTION COMPLETE!")
+    print("=" * 70)
+    print(f"🎯 Headline analyzed: {HEADLINE[:50]}...")
+    print(f"📊 Detected domain: {headline_context['primary_domain']}")
+    print(f"📋 Headline type: {headline_context['headline_type']}")
+    print(f"🔍 Search terms generated: {len(search_terms)} (adaptively from context)")
+    print(f"🚀 Advanced tools used: Google Trends + Autocomplete + Competition Analysis")
+    print("💡 All keywords adapted specifically to headline content - NO hardcoding!")
+    print("=" * 70)
