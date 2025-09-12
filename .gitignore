@@ -1,0 +1,58 @@
+# Fichiers d'environnement
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Fichiers d'image générés
+article_image.jpg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+
+# Fichiers de sortie
+seo_optimized_final.html
+seo_analysis_report.txt
+seo_analysis_final_report.txt
+
+# Fichiers de cache
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+.pytest_cache/
+
+# Fichiers d'IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store

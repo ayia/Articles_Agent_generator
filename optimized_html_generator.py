@@ -8,6 +8,10 @@ from datetime import datetime
 from typing import Dict, Any, List
 import base64
 from io import BytesIO
+from dotenv import load_dotenv
+
+# Charger les variables d'environnement depuis .env
+load_dotenv()
 
 # Imports pour la génération d'image avec Hugging Face
 # Permet de générer une image à partir d'un prompt textuel
@@ -35,7 +39,11 @@ class OptimizedSEOHTMLGenerator:
         self.seo_audit = self.data.get('seo_audit', {})
         
         # Configuration pour la génération d'image
-        self.hf_token = os.environ.get('HF_TOKEN', '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')
+        # Récupérer le token depuis les variables d'environnement (fichier .env)
+        self.hf_token = os.environ.get('HF_TOKEN')
+        if not self.hf_token:
+            print("\n\033[93mATTENTION: Variable HF_TOKEN non trouvée dans .env\033[0m")
+            print("Créez un fichier .env avec HF_TOKEN=votre_token_huggingface")
         self.image_prompt = self.data.get('image_generation_prompt', '')
         self.image_path = 'article_image.jpg'
         self.image_base64 = None
