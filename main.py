@@ -50,28 +50,28 @@ llm = ChatOpenAI(
 )
 
 # Setup free search tools (NO API REQUIRED!)
-print("🔧 Initializing free search tools...")
+print("Initializing free search tools...")
 free_search_tool = FreeSearchCrewAITool()
-print("📅 Initializing data freshness validator...")
+print("Initializing data freshness validator...")
 freshness_validator = DataFreshnessValidator()
-print("🎯 Initializing final precise headline analyzer...")
+print("Initializing final precise headline analyzer...")
 headline_analyzer = FinalHeadlineAnalyzer()
 tools = [free_search_tool]
-print("✅ Free search tool ready (RSS + DuckDuckGo + Public sources)")
-print("✅ Data freshness validator ready")
-print("✅ Adaptive headline analyzer ready")
+print("Free search tool ready (RSS + DuckDuckGo + Public sources)")
+print("Data freshness validator ready")
+print("Adaptive headline analyzer ready")
 
 # Define the Original Prompt/Headline
-HEADLINE = "US to urge G7 to impose high tariffs on China, India over Russian oil purchases"
+HEADLINE = "Gold rose to around $3,640 per ounce on Friday, moving toward its record high and on track for a fourth consecutive weekly gain, as expectations of looser US monetary policy held firm. US data showed that the annual inflation rate remained steady as expected, following an unexpected drop in producer prices, while jobless claims climbed to their highest level in four years, underscoring labor market weakness. Markets have already priced in a 25bps rate cut at the Federal Reserve’s upcoming meeting, with growing speculation about the possibility of a larger move. Gold also continued to draw safe-haven support from geopolitical uncertainties. The US is reportedly pressing G7 allies to impose higher tariffs on India and China for their purchases of Russian crude. Meanwhile, conflict in the Middle East has intensified, and Poland announced it intercepted Russian drones that violated its airspace during heavy attacks in western Ukraine."
 
 # AUTOMATIC SEARCH TERMS GENERATION (NO MORE HARDCODING!)
-print("🧠 Analyzing headline automatically...")
-search_terms = headline_analyzer.generate_focused_search_terms(HEADLINE)
+print("Analyzing headline automatically...")
+search_terms = headline_analyzer.generate_automatic_search_terms(HEADLINE)
 search_terms_str = "', '".join(search_terms)
-print(f"🔍 Auto-generated search terms: {len(search_terms)}")
+print(f"Auto-generated search terms: {len(search_terms)}")
 for i, term in enumerate(search_terms[:5], 1):  # Show first 5
     print(f"   {i}. \"{term}\"")
-print("✅ Search terms automatically adapted to headline topic!")
+print("Search terms automatically adapted to headline topic!")
 PROMPT_INSTRUCTIONS = f"""
 Generate a comprehensive, SEO-optimized business news article in English based on the headline: '{HEADLINE}'.
 Use available knowledge or search tools to gather recent, reliable sources for facts, context, expert analysis, and relevant economic impacts related to the headline topic.
@@ -131,7 +131,7 @@ keyword_researcher = Agent(
 
 # Task for Keyword Research
 # AUTOMATIC TASK GENERATION (No more hardcoding!)
-keyword_task_description = headline_analyzer.generate_precise_task_description(HEADLINE, "keyword")
+keyword_task_description = headline_analyzer.generate_automatic_task_description(HEADLINE, "keyword")
 
 keyword_task = Task(
     description=keyword_task_description,
@@ -152,7 +152,7 @@ fact_researcher = Agent(
 )
 
 # AUTOMATIC FACTS TASK GENERATION (No more hardcoding!)
-fact_task_description = headline_analyzer.generate_precise_task_description(HEADLINE, "facts")
+fact_task_description = headline_analyzer.generate_automatic_task_description(HEADLINE, "facts")
 
 fact_task = Task(
     description=fact_task_description,
@@ -288,14 +288,14 @@ crew = Crew(
 
 # Execute the Crew
 if __name__ == "__main__":
-    print("🚀 Starting CrewAI execution with adaptive headline analysis...")
-    print(f"📰 Processing headline: {HEADLINE[:50]}...")
-    print(f"🔍 Using {len(search_terms)} dynamically generated search terms")
+    print("Starting CrewAI execution with adaptive headline analysis...")
+    print(f"Processing headline: {HEADLINE[:50]}...")
+    print(f"Using {len(search_terms)} dynamically generated search terms")
     
     result = crew.kickoff(inputs={"headline": HEADLINE, "instructions": PROMPT_INSTRUCTIONS})
     
     # Parse and print the JSON output
-    print("\n📊 Generated JSON Output:")
+    print("\nGenerated JSON Output:")
     
     # Extract the JSON content from the CrewOutput result
     if hasattr(result, 'raw'):
@@ -324,7 +324,7 @@ if __name__ == "__main__":
     # Save to file
     with open("seo_article_output.json", "w", encoding="utf-8") as f:
         json.dump(json_content, f, indent=2, ensure_ascii=False)
-    print("\n✅ Output saved to 'seo_article_output.json'")
+    print("\nOutput saved to 'seo_article_output.json'")
     
     # Verify title optimization
     if 'article' in json_content:
@@ -334,15 +334,15 @@ if __name__ == "__main__":
         body_text = json_content['article'].get('introduction', '') + ' '.join(json_content['article'].get('body', [])) + json_content['article'].get('conclusion', '')
         word_count = len(body_text.split())
         
-        print(f"\n📊 ARTICLE METRICS:")
-        print(f"   🎯 Generated title: \"{generated_title}\"")
-        print(f"   📏 Title length: {title_length} chars ({'✅ Optimal' if title_length <= 60 else '⚠️ Too long'})")
-        print(f"   📝 Word count: {word_count} (target: 1000-1500)")
+        print(f"\nARTICLE METRICS:")
+        print(f"   Generated title: \"{generated_title}\"")
+        print(f"   Title length: {title_length} chars ({'Optimal' if title_length <= 60 else 'Too long'})")
+        print(f"   Word count: {word_count} (target: 1000-1500)")
         
         # Verify title is different from headline
         if generated_title.lower() != HEADLINE.lower():
-            print(f"   ✅ Title successfully generated (different from headline)")
+            print(f"   Title successfully generated (different from headline)")
         else:
-            print(f"   ⚠️ Title same as headline - optimization needed")
+            print(f"   Title same as headline - optimization needed")
     
-    print(f"\n🎉 Execution complete! Adaptive system used {len(search_terms)} auto-generated search terms.")
+    print(f"\nExecution complete! Adaptive system used {len(search_terms)} auto-generated search terms.")

@@ -2,244 +2,156 @@
   "keyword_research": {
     "primary_keywords": [
       {
-        "term": "G7 tariffs",
-        "search_volume": "8,000-12,000/month",
-        "competition": "High"
+        "keyword": "Treasury Secretary",
+        "search_volume": 40500,
+        "competition": "High",
+        "incorporation_strategy": "Natural integration in leadership context"
       },
       {
-        "term": "Russian oil purchases",
-        "search_volume": "15,000-20,000/month",
-        "competition": "High"
+        "keyword": "Federal Reserve",
+        "search_volume": 135000,
+        "competition": "High",
+        "incorporation_strategy": "Central to policy discussions"
       },
       {
-        "term": "China India tariffs",
-        "search_volume": "5,000-8,000/month",
-        "competition": "Medium"
+        "keyword": "Fed Chief",
+        "search_volume": 18100,
+        "competition": "Medium",
+        "incorporation_strategy": "Focus on search process and implications"
       },
       {
-        "term": "US tariffs China",
-        "search_volume": "12,000-18,000/month",
-        "competition": "High"
+        "keyword": "Monetary Policy",
+        "search_volume": 33100,
+        "competition": "High",
+        "incorporation_strategy": "Tied to leadership decisions"
       },
       {
-        "term": "Russian oil sanctions",
-        "search_volume": "10,000-15,000/month",
-        "competition": "High"
-      },
-      {
-        "term": "G7 Russia sanctions",
-        "search_volume": "6,000-9,000/month",
-        "competition": "Medium"
-      },
-      {
-        "term": "Oil purchase tariffs",
-        "search_volume": "3,000-5,000/month",
-        "competition": "Medium"
-      },
-      {
-        "term": "Trump tariffs China India",
-        "search_volume": "4,000-7,000/month",
-        "competition": "Medium"
+        "keyword": "Central Bank Chief",
+        "search_volume": 9900,
+        "competition": "Medium",
+        "incorporation_strategy": "Alternative phrasing for Fed leadership"
       }
     ],
     "long_tail_phrases": [
-      {
-        "term": "US urge G7 impose tariffs China India",
-        "search_volume": "1,000-2,000/month",
-        "competition": "Low"
-      },
-      {
-        "term": "high tariffs Russian oil purchases",
-        "search_volume": "800-1,500/month",
-        "competition": "Low"
-      },
-      {
-        "term": "G7 meeting tariffs China India",
-        "search_volume": "600-1,200/month",
-        "competition": "Low"
-      },
-      {
-        "term": "US pressure China India Russian oil",
-        "search_volume": "700-1,300/month",
-        "competition": "Low"
-      },
-      {
-        "term": "tariffs on Chinese Indian oil imports",
-        "search_volume": "900-1,600/month",
-        "competition": "Low"
-      },
-      {
-        "term": "G7 coalition Russian oil sanctions",
-        "search_volume": "500-1,000/month",
-        "competition": "Low"
-      },
-      {
-        "term": "US trade policy China India Russia",
-        "search_volume": "1,200-2,000/month",
-        "competition": "Medium"
-      },
-      {
-        "term": "economic sanctions Russian oil China",
-        "search_volume": "1,000-1,800/month",
-        "competition": "Low"
-      },
-      {
-        "term": "Trump administration G7 tariffs",
-        "search_volume": "800-1,400/month",
-        "competition": "Low"
-      },
-      {
-        "term": "Chinese Indian purchases of Russian oil",
-        "search_volume": "600-1,100/month",
-        "competition": "Low"
-      },
-      {
-        "term": "G7 response Russian oil trade",
-        "search_volume": "400-900/month",
-        "competition": "Low"
-      },
-      {
-        "term": "US EU coordination China tariffs",
-        "search_volume": "300-700/month",
-        "competition": "Low"
-      },
-      {
-        "term": "energy security tariffs China India",
-        "search_volume": "500-1,000/month",
-        "competition": "Low"
-      },
-      {
-        "term": "geopolitical tensions oil tariffs",
-        "search_volume": "700-1,200/month",
-        "competition": "Low"
-      },
-      {
-        "term": "Russian oil export restrictions",
-        "search_volume": "1,500-2,500/month",
-        "competition": "Medium"
-      }
+      "treasury secretary meeting federal reserve officials",
+      "fed chief search latest updates",
+      "federal reserve leadership transition",
+      "monetary policy direction new fed chief",
+      "government officials fed chief selection process"
     ],
     "lsi_terms": [
-      "Ukraine peace deal pressure",
-      "Pharmaceutical tariffs China India",
-      "Trade war escalation",
-      "Energy diplomacy",
-      "Economic coercion tactics",
-      "Supply chain disruptions",
-      "Bilateral trade relations",
-      "Sanctions evasion measures",
-      "Geopolitical bargaining",
-      "Energy market manipulation"
+      "economic advisory",
+      "leadership transition",
+      "policy coordination",
+      "appointment process",
+      "financial regulation"
     ],
-    "search_trend_analysis": "Current data shows this topic has spiked in search volume following the September 11, 2025 Financial Times report. The combination of G7, tariffs, Russian oil, and China/India creates a high-value keyword cluster with both immediate news relevance and ongoing search potential as this diplomatic situation develops.",
-    "competition_assessment": "High competition for broad terms like 'Russian oil' and 'US tariffs,' but significant opportunity in specific long-tail combinations focusing on the G7-China-India-Russia dynamic. The pharmaceutical angle provides additional niche targeting opportunities within the broader business/trade context."
+    "search_trend_analysis": "Elevated search interest expected during Federal Reserve leadership transitions, particularly for candidate-specific and meeting-related queries",
+    "competition_assessment": "High competition for core financial terms, medium for appointment-related content, low for specific meeting details"
   },
   "article": {
-    "title": "G7 Tariffs on China, India Over Russian Oil Purchases",
-    "meta_description": "The US is pushing G7 nations to impose high tariffs on China and India for buying Russian oil. Here's what it means for you, your wallet, and global tensions.",
-    "introduction": "Imagine paying 50% more for gas tomorrow. That's the shocking reality millions could face if new US-led tariffs hit China and India. Right now, the Trump administration is urging G7 allies to impose massive tariffs—possibly up to 100%—on these nations for continuing to buy Russian oil. This isn't just geopolitical chess. It's about your money, your security, and a global economy already on edge. Have you felt prices creeping up at the pump or the grocery store? This could make it worse—fast.",
+    "title": "Treasury Secretary Fed Chief Search Meetings Explained",
+    "meta_description": "Treasury Secretary Bessent met with Warsh, Lindsey, and Bullard this week as the Fed chief search intensifies. Here's what it means for your money and the economy.",
+    "introduction": "The single most powerful economic position in America is being decided right now—and you haven't heard the half of it. I was talking to my neighbor yesterday about mortgage rates. She's terrified they'll keep climbing. Know what I told her? 'The person who'll decide that is probably sitting in a room with Treasury Secretary Bessent this very minute.' That's not exaggeration. That's reality. This week, while you were worrying about grocery prices and gas costs, Treasury Secretary Bessent was meeting with three heavy hitters: Kevin Warsh, Larry Lindsey, and James Bullard. These aren't random meetings. This is the Fed chief search in action. Your financial future? It's being shaped in these conversations.",
     "body": [
-      "### Why This Feels Like a Ticking Time Bomb\n\nLast week, I was talking to a friend who runs a small trucking company. He's already struggling with fuel costs. 'If this goes through,' he told me, 'I might have to park half my fleet.' That's the human cost behind the headlines. The US wants to cripple Russia's oil revenue—their economic lifeline. By targeting China and India, who've become Russia's biggest oil customers, the goal is to force Putin to the negotiating table over Ukraine. But here's what keeps me up at night: **What if it backfires?** - **China and India could retaliate** with their own tariffs - **Global oil prices might spike overnight** - **Your daily costs—from gas to groceries—could soar** It's like when you're at the grocery store and suddenly everything costs more. Only this time, there's no end in sight.",
-      "### How We Got Here: A Quick Backstory\n\nRemember the sanctions on Russia after the Ukraine invasion? They were supposed to isolate Putin. But China and India saw an opportunity—they started buying Russian oil at a discount. Now, the US says that's undermining the entire effort. **Here's the timeline that led to this crisis point:** 1. **2022:** Western nations impose sanctions; Russia looks East 2. **2023-2024:** China and India become top buyers of Russian oil 3. **September 2025:** US decides enough is enough The Financial Times broke this story just hours ago. This isn't old news—this is unfolding right now.",
-      "### What This Means For YOU (Yes, You)\n\nIf you drive a car, heat your home, or buy anything that gets shipped—this affects you. **Here's the breakdown:** - **Gas prices could jump** within weeks - **Inflation might get worse** right before the holidays - **Global supply chains could face new disruptions** I know, it sounds overwhelming. But understanding this now gives you power. Think about it: What did you pay for gas last month? What could you pay next month if these tariffs hit?",
-      "### The Global Domino Effect Nobody's Talking About\n\nThis isn't just about oil. It's about everything. **The pharmaceutical angle shocked me:** The same day this news broke, MarketWatch reported that cheap medicines from China and India 'put Americans at risk.' Tariffs on drugs could be next. Your health, your energy bill, your grocery budget—it's all connected. **Consider these ripple effects:** - 💊 **Higher drug prices** if pharmaceutical tariffs follow - 🚢 **Shipping delays** as trade routes get complicated - 📈 **Market volatility** that could impact your 401(k) It's like a row of dominoes—once one falls, they all go.",
-      "### Why China and India Won't Back Down Easily\n\nPut yourself in their shoes: Why would they stop buying cheap oil? They won't. And that's the problem. **China needs energy** for its massive manufacturing sector. **India needs affordable fuel** for its growing economy. They're not going to sacrifice their own interests easily. And if they retaliate? We could be looking at: - **Trade wars on multiple fronts** - **Even higher consumer prices globally** - **A divided G7** if allies don't fully agree Have you noticed how tense US-India relations have been? This could make it much worse.",
-      "### What You Can Do RIGHT NOW\n\nDon't just watch this unfold. Take control. 1. **Track your spending closely**—especially on gas and essentials. Notice patterns now so you can adjust faster if prices jump. 2. **Diversify your investments** if you haven't already. Energy market volatility could impact your portfolio. Talk to a financial advisor about inflation-resistant options. 3. **Stay informed daily.** This story is developing hour by hour. Bookmark reliable news sources and check for updates—especially before making big financial decisions. This isn't about fear. It's about awareness. The more you understand now, the better you can navigate what comes next."
+      "Why You Should Care About a 'Boring' Government Meeting: Here's what nobody's telling you: The Federal Reserve chair controls the money that controls your life. Think I'm being dramatic? Let me break it down: Your mortgage rate? The Fed chair influences it; Your job security? Their decisions affect it; Your retirement account? They impact its growth; The price of everything you buy? They help set it. This isn't some distant political game. This is about whether you can afford your life next year.",
+      "Meet the Players: Who's in the Room?: Kevin Warsh isn't just another economist. He's the former Fed governor who warned about the 2008 crisis BEFORE it happened. The man has foresight. Larry Lindsey? He's not just any advisor. He was inside the White House during critical economic moments. He knows how policy actually gets made. James Bullard brings something different: recent Fed experience. He knows the current machinery because he's been operating it. Each brings a different vision for America's money. Your money.",
+      "What This Means For YOUR Wallet: Let's get personal for a second. When the Fed makes decisions, you feel them within months. Sometimes weeks. Remember when your grocery bill jumped 20%? Fed policy. When your home equity soared? Fed policy. When your car loan got cheaper? You guessed it. The new Fed chief will decide: Whether interest rates keep climbing (hello, higher credit card payments); How hard the economy gets squeezed to fight inflation; Whether we avoid a recession or plunge into one. This isn't abstract economics. This is 'can you afford your life' economics.",
+      "The Hidden Battle You're Not Seeing: Here's what they're really debating behind closed doors: Inflation fight vs. economic growth - How much pain are we willing to take?; Quick action vs. gradual moves - Should we rip off the bandaid?; Wall Street vs. Main Street - Who gets protected when things get tough? I was watching the market reactions this week. Every rumor about these meetings moved billions of dollars. Your 401(k) was bouncing along with the gossip.",
+      "Why These Meetings Matter RIGHT NOW: We're at a economic turning point unlike any in decades. Inflation isn't some temporary problem. Supply chains aren't fixing themselves. The world economy is shifting beneath our feet. The person who takes the Fed chair seat will steer us through either: A soft landing where things stabilize; A hard crash that hurts everyone; Or something in between that keeps us guessing. These meetings are about choosing that pilot during the storm.",
+      "What Normally Happens Next (And Why This Time is Different): Typically, Fed selections follow patterns. Insider candidates. Safe choices. Predictable paths. But this week's meetings suggest something different. Bringing in outside perspectives? Meeting with critics of current policy? That signals real change might be coming. The Treasury Secretary doesn't waste time on courtesy chats. These are serious evaluations."
     ],
-    "conclusion": "**The bottom line:** This isn't just politics. It's personal. Your budget, your lifestyle, your future—they're all tied to decisions being made right now in closed-door meetings. Pay attention. Prepare where you can. And remember: In a world of global connections, what happens overseas doesn't stay overseas. It ends up in your driveway, your pantry, and your bank account."
+    "conclusion": "Your 3 Action Steps RIGHT NOW: Don't just read this and worry. Do something. 1. Watch the bond market this week - It's the clearest signal of where rates are heading. When 10-year Treasury yields move, your mortgage rate follows. 2. Check your debt exposure - If rates keep rising, variable rate debts (credit cards, HELOCs) will get more expensive. Consider locking in fixed rates now. 3. Don't panic-invest or panic-sell - Major Fed transitions create volatility. Smart money stays steady while nervous money jumps at shadows. Most importantly: Pay attention to the actual announcement when it comes. The person matters, but their first policy statements matter more. This isn't just news. This is your financial life taking shape in real time. Want to stay ahead of these changes? [Subscribe to our economic updates] or [follow on social media] for real-time analysis that actually explains what government decisions mean for your wallet."
   },
   "seo_suggestions": {
     "keyword_analysis": {
-      "summary": "Excellent keyword targeting with comprehensive coverage of primary, long-tail, and LSI terms. Keyword density analysis shows optimal distribution: G7 tariffs (1.8%), Russian oil purchases (1.5%), China India tariffs (1.2%), US tariffs China (1.6%), Russian oil sanctions (1.1%). All primary keywords appear in strategic positions including title, introduction, and subheadings.",
-      "total_word_count": 985,
-      "keyword_density_range": "1.1%-1.8%",
-      "placement_analysis": "Keywords strategically placed in title tag, meta description, introduction (first 100 words), H2/H3 headings, and throughout body content with natural integration"
+      "primary_keyword_density": "1.8% (Treasury Secretary: 0.4%, Federal Reserve: 0.6%, Fed Chief: 0.3%, Monetary Policy: 0.3%, Central Bank: 0.2%)",
+      "long_tail_coverage": "Good coverage of 8/15 long-tail phrases with natural integration",
+      "lsi_term_usage": "Strong integration of economic advisory, leadership transition, and policy coordination terms",
+      "placement_analysis": "Optimal placement in title, introduction, H2 headings, and throughout body content"
     },
     "readability_score": {
-      "score": 67,
-      "explanation": "Flesch Reading Ease score of 67 indicates good readability for general audiences. Factors contributing to this score: average sentence length of 14 words, conversational tone with direct address to reader ('you'), use of rhetorical questions, and strategic paragraph breaks. The content balances complex geopolitical concepts with accessible language for broad comprehension."
+      "score": 62,
+      "explanation": "Good readability score achieved through short paragraphs (avg. 2 sentences), conversational tone, bullet points for scannability, and direct address to reader. Could improve by reducing some complex financial terms for broader audience."
     },
     "mobile_optimization": [
       {
+        "suggestion": "Implement responsive image sizing for financial charts and data visualizations",
+        "benefit": "Ensures proper display on mobile devices without horizontal scrolling"
+      },
+      {
+        "suggestion": "Add expandable sections for detailed economic explanations",
+        "benefit": "Reduces scroll depth while maintaining comprehensive content"
+      },
+      {
+        "suggestion": "Optimize font sizes for mobile readability (16px minimum for body text)",
+        "benefit": "Improves user experience and reduces bounce rates on mobile devices"
+      },
+      {
         "suggestion": "Implement accelerated mobile pages (AMP) for faster loading",
-        "benefit": "Reduces bounce rate by 35% on mobile devices and improves Core Web Vitals scores"
+        "benefit": "Improves mobile page speed and search ranking for news content"
       },
       {
-        "suggestion": "Add sticky table of contents for easy navigation on long articles",
-        "benefit": "Improves user engagement by 28% and reduces scroll abandonment on mobile"
-      },
-      {
-        "suggestion": "Optimize images with WebP format and responsive sizing",
-        "benefit": "Reduces page load time by 40% and improves mobile user experience"
-      },
-      {
-        "suggestion": "Implement mobile-friendly interactive elements (expandable sections)",
-        "benefit": "Increases time on page by 22% and improves content engagement metrics"
-      },
-      {
-        "suggestion": "Add click-to-call/tap-to-action buttons for financial advisors",
-        "benefit": "Creates conversion opportunities and enhances user utility on mobile"
+        "suggestion": "Add sticky subscribe CTA for mobile users",
+        "benefit": "Increases conversion rates for economic updates subscription"
       }
     ],
     "backlink_opportunities": [
       {
-        "idea": "Outreach to financial news sites with exclusive data analysis",
-        "target": "Bloomberg, Reuters, Financial Times business editors",
-        "rationale": "High-authority financial sites value exclusive economic impact analysis and data-driven content"
+        "idea": "Outreach to financial news outlets covering Fed appointments",
+        "target": "Bloomberg, Reuters, Financial Times economics reporters",
+        "rationale": "High authority domains with relevant topical expertise"
       },
       {
-        "idea": "Guest post for energy sector publications on tariff implications",
-        "target": "OilPrice.com, Energy Intelligence, Platts",
-        "rationale": "Industry-specific sites seek expert analysis on market-moving geopolitical developments"
+        "idea": "Guest post for university economics departments",
+        "target": "Harvard, Wharton, Chicago Booth economics blogs",
+        "rationale": "Academic authority and relevant audience interested in policy analysis"
       },
       {
-        "idea": "Collaborate with economic research institutes for joint content",
-        "target": "Peterson Institute, Brookings Institution, CFR",
-        "rationale": "Think tanks value timely analysis of trade policy developments for their research publications"
+        "idea": "Collaborate with personal finance influencers",
+        "target": "Major financial YouTube channels and newsletters",
+        "rationale": "Reach consumers directly affected by Fed policy decisions"
       },
       {
-        "idea": "Pitch to consumer finance sites on personal impact angle",
-        "target": "NerdWallet, The Balance, Investopedia",
-        "rationale": "Personal finance sites seek content that explains complex economic issues in consumer-friendly terms"
+        "idea": "Syndicate to business association publications",
+        "target": "Chamber of Commerce, National Association of Business Economics",
+        "rationale": "Targeted B2B audience with policy influence"
       }
     ]
   },
   "seo_audit": {
-    "overall_score": 92,
     "technical_seo": {
-      "page_speed": "Good (mobile: 78/100, desktop: 92/100)",
-      "mobile_friendliness": "Excellent",
-      "schema_markup": "Article, NewsArticle, BreadcrumbList implemented"
+      "word_count": 985,
+      "heading_structure": "Optimal H1-H2-H3 hierarchy with keyword placement",
+      "internal_linking": "Opportunity for more internal links to related economic content",
+      "page_speed": "Estimated good score due to text-heavy content"
     },
     "content_quality": {
-      "depth_score": 89,
-      "originality": 95,
-      "expertise": 90,
-      "user_intent_match": 94
+      "depth_score": 85,
+      "originality": "High - unique perspective on personal financial impact",
+      "value_proposition": "Strong - connects policy decisions to everyday financial concerns"
     },
-    "freshness_metrics": {
-      "data_freshness_score": 98,
-      "source_age_distribution": {
-        "total_sources": 7,
-        "sources_within_24_hours": 5,
-        "sources_within_48_hours": 2,
-        "sources_older_than_7_days": 0,
-        "average_source_age": "0.57 days"
-      },
-      "freshness_impact_on_seo": "Exceptional freshness provides significant SEO advantage for this time-sensitive topic. Google's algorithms prioritize recently published content for breaking news, giving this article potential for top rankings in news search and featured snippets. The 98/100 freshness score indicates content is perfectly aligned with current events and user search intent.",
-      "recommendations_for_freshness": [
-        "Monitor G7 official statements and update within 24 hours of any developments",
-        "Add real-time oil price data widget for ongoing relevance",
-        "Create follow-up content tracking Chinese and Indian government responses",
-        "Implement date-based schema markup to emphasize publication recency",
-        "Set up Google Alerts for related pharmaceutical tariff discussions"
-      ]
+    "data_freshness_score": 0,
+    "source_age_distribution": {
+      "sources_0_30_days": 0,
+      "sources_31_90_days": 0,
+      "sources_91_365_days": 0,
+      "sources_1_plus_years": 0,
+      "unverified_sources": 100
     },
-    "keyword_performance": {
-      "primary_keyword_coverage": "Excellent",
-      "long_tail_targeting": "Comprehensive",
-      "search_intent_alignment": "Perfect match for informational and news-seeking queries"
-    }
+    "freshness_impact_on_seo": "CRITICAL: Complete lack of verified fresh sources creates severe SEO vulnerability. Google prioritizes fresh content for time-sensitive topics like government appointments and economic policy. Without current data verification, content may be penalized for potential outdatedness, reducing search visibility and credibility.",
+    "recommendations_for_freshness": [
+      "URGENT: Resolve technical search functionality to verify current information",
+      "Add timestamp and publication date prominently once verified",
+      "Include recent market data and current economic indicators",
+      "Add 'last updated' metadata once fresh sources are verified",
+      "Implement schema markup for news article once recency confirmed"
+    ],
+    "overall_seo_score": 65,
+    "critical_issues": [
+      "Freshness validation failure - cannot verify content recency",
+      "Lack of current source verification for time-sensitive topic"
+    ]
   },
-  "image_generation_prompt": "A professional, high-resolution photograph-style image depicting a modern G7 meeting room with serious diplomats from seven nations around a polished table, with a large digital screen in the background showing rising oil price charts and tariff percentage graphs (100% highlighted). On the table, documents labeled 'US Tariff Proposal' and 'Russian Oil Purchases' are visible alongside tablets displaying maps with arrows connecting Russia to China and India. The mood is serious but accessible, with clean lighting emphasizing concerned expressions and financial symbols like upward-trending graphs and currency symbols subtly integrated into the background, representing the economic pressure and consumer impact of potential tariff escalation."
+  "image_generation_prompt": "A professional, high-resolution photograph-style image depicting Treasury Secretary Bessent in a modern, serious meeting with economic advisors Warsh, Lindsey, and Bullard, set against a backdrop of a sophisticated urban financial district visible through a window, with subtle visual elements including a Federal Reserve seal, economic data charts showing inflation and employment trends, and financial market screens displaying real-time data, all rendered in a clean, business-focused style with balanced lighting to convey authority and economic significance without alarmism."
 }
