@@ -62,7 +62,7 @@ print("Data freshness validator ready")
 print("Adaptive headline analyzer ready")
 
 # Define the Original Prompt/Headline
-HEADLINE = "Gold rose to around $3,640 per ounce on Friday, moving toward its record high and on track for a fourth consecutive weekly gain, as expectations of looser US monetary policy held firm. US data showed that the annual inflation rate remained steady as expected, following an unexpected drop in producer prices, while jobless claims climbed to their highest level in four years, underscoring labor market weakness. Markets have already priced in a 25bps rate cut at the Federal Reserve’s upcoming meeting, with growing speculation about the possibility of a larger move. Gold also continued to draw safe-haven support from geopolitical uncertainties. The US is reportedly pressing G7 allies to impose higher tariffs on India and China for their purchases of Russian crude. Meanwhile, conflict in the Middle East has intensified, and Poland announced it intercepted Russian drones that violated its airspace during heavy attacks in western Ukraine."
+HEADLINE = "Australian Dollar climbs amid improved market sentiment"
 
 # AUTOMATIC SEARCH TERMS GENERATION (NO MORE HARDCODING!)
 print("Analyzing headline automatically...")
