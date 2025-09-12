@@ -42,16 +42,13 @@ class FreeWebSearchTool:
         
         # Sources d'actualités gratuites avec RSS
         self.news_sources = {
-            'forexlive': 'https://www.forexlive.com/feed/',
+          'forexlive': 'https://www.forexlive.com/feed/',
             'actionforex': 'https://www.actionforex.com/feed/',
             'leaprate': 'https://www.leaprate.com/feed/',
             'fxnewsgroup': 'https://fxnewsgroup.com/feed/',
-            'investing_com': 'https://www.investing.com/rss/news_70.rss',
-            'dailyfx': 'https://rss.dailyfx.com/feeds/all',
-            'fxstreet': 'https://www.fxstreet.com/rss/news',
             'finance_magnates': 'https://www.financemagnates.com/feed/',
             'forexcrunch': 'https://www.forexcrunch.com/feed/',
-            'myfxbook': 'https://www.myfxbook.com/rss/latest-forex-news',       }
+        }
         
         # Sites de recherche publics (pas Google, mais alternatives gratuites)
         self.search_engines = [
