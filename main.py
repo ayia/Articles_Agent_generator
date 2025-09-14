@@ -32,6 +32,7 @@ from final_headline_analyzer import FinalHeadlineAnalyzer  # Final precise analy
 # NOUVELLES AMÉLIORATIONS ADAPTATIVES - 100% GRATUIT
 from adaptive_keyword_context import AdaptiveKeywordContextAnalyzer  # Analyse contextuelle adaptative
 from advanced_keyword_tools import AdvancedKeywordResearchTool  # Outils avancés de recherche de mots-clés
+from economic_data_validator import EconomicDataValidator  # Système de validation des données économiques
 
 # Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
@@ -71,6 +72,9 @@ advanced_keyword_tool = AdvancedKeywordResearchTool()
 print("🧠 Initializing adaptive context analyzer...")
 adaptive_context_analyzer = AdaptiveKeywordContextAnalyzer()
 
+print("🔍 Initializing advanced economic data validator...")
+economic_validator = EconomicDataValidator()
+
 # Combine all tools for agents
 tools = [free_search_tool, advanced_keyword_tool]
 
@@ -79,11 +83,12 @@ print("✅ Data freshness validator ready")
 print("✅ Adaptive headline analyzer ready")
 print("✅ Advanced keyword research tools ready (Google Trends + Autocomplete)")
 print("✅ Adaptive context analyzer ready")
+print("✅ Advanced economic data validator ready (Forex + Inflation + Rates + DXY + Central Banks)")
 print("🎯 SYSTEM READY FOR ADAPTIVE KEYWORD RESEARCH!")
 print("=" * 60)
 
 # Define the Original Prompt/Headline
-HEADLINE = "Gold is testing the top of the daily range. It's up $15 to $3649 today and perked up following the softer UMich consumer sentiment data.The precious metal is consolidating now after reaching $3675 on Tuesday in a spike higher. It's likely to continue sideways until Wednesday's FOMC decision. A dovish bent from the Fed chair would be a green light for the gold bulls to take it another leg higher. I don't think we'd need to see a surprise 50 bps cut but if Powell validates employment concerns and downplays inflation then it could continue the surge.Techncially, Tuesday's high and overbought conditions are the only thing standing in the way of further gains and beyond that it will be big round figures like $3750 and $4000 offering up resistance.On the geopolitical side, the US appears to be trying to ramp up pressure on Russia to enter talks on Ukraine peace. That presents two-sided risks as harsher Russian sanctions or reserve confiscation could strengthen the case for gold, while a peace deal would weaken it. My sense is that Trump has played his best cards in terms of diplomacy but Russia isn't interested and feels it has the upper hand in the war."
+HEADLINE = "What's up next week? Central Bank decisions highlighted by the FOMC rate decision - Forex TRADING IMPLICATIONS"
 
 # ADAPTIVE ANALYSIS SYSTEM (NO MORE HARDCODING!)
 print("\n🧠 ADAPTIVE HEADLINE ANALYSIS...")
@@ -110,28 +115,43 @@ if len(search_terms) > 8:
 
 print("🚀 ADAPTIVE ANALYSIS COMPLETE - All terms generated from headline context!")
 PROMPT_INSTRUCTIONS = f"""
-Generate a comprehensive, SEO-optimized business news article in English based on the headline: '{HEADLINE}'.
-Use available knowledge or search tools to gather recent, reliable sources for facts, context, expert analysis, and relevant economic impacts related to the headline topic.
-Ensure the article is original, fact-checked, 1000-1500 words (expanded for depth), engaging, and professional for a business audience. Expand sections with detailed analysis, historical context, multiple stakeholder perspectives, data visualizations ideas, and forward-looking scenarios.
+Generate a comprehensive, SEO-optimized FOREX TRADING article in English based on the headline: '{HEADLINE}'.
+Use available knowledge or search tools to gather recent, reliable sources for facts, context, expert analysis, and FOREX TRADING IMPLICATIONS related to the headline topic. The article MUST include specific trading insights, market analysis, and actionable trading strategies to drive traffic to our forex trading signals platform.
 
-Before writing, conduct keyword research: Identify 5-10 primary keywords, 10-15 long-tail phrases, and related LSI terms. List them with estimated search volumes, competition levels, and natural incorporation suggestions.
+CRITICAL - ECONOMIC DATA ACCURACY REQUIREMENTS:
+- Use ONLY the most recent economic data available as of September 2025
+- For forex rates, use CURRENT values: EUR/USD ~1.1715, GBP/USD ~1.353, USD/JPY ~147.45
+- For inflation data, use LATEST figures: CPI Headline 2.9%, CPI Core 3.1% (August 2025)
+- For unemployment data, use CURRENT statistics: Unemployment Rate 4.3%, Initial Claims 240,500 (September 2025)
+- For treasury yields, use LATEST values: 10Y Treasury ~4.08%, 2Y Treasury ~3.85% (September 2025)
+- For Fed rates, use CURRENT range: 4.25-4.50% (effective rate: 4.33%)
+- For rate probabilities, use LATEST market pricing: Fed hold ~15%, Fed cut 25bp ~80%, Fed cut 50bp ~5%
+- For DXY index, use CURRENT value: ~97.61 (as of September 12, 2025)
+- For central bank meetings, use CORRECT dates: FOMC September 16-17, BoC September 17
+- For expert citations, ONLY quote recognized analysts from reputable organizations
+- Double-check ALL economic figures before including them in the article
+- Avoid using outdated or incorrect economic data that could mislead traders
+
+Ensure the article is original, fact-checked, 1000-1500 words (expanded for depth), PROFESSIONAL in tone, and targeted for a sophisticated FOREX TRADER audience. Expand sections with detailed technical analysis, chart patterns, support/resistance levels, and specific currency pair implications (EUR/USD, GBP/USD, USD/JPY).
+
+Before writing, conduct keyword research: Identify 5-10 primary keywords (MUST include forex trading terms), 10-15 long-tail phrases, and related LSI terms. List them with estimated search volumes, competition levels, and natural incorporation suggestions.
 
 Structure per SEO best practices and E-E-A-T:
-- Title (H1): CREATE A NEW SEO-optimized title (50-60 characters) using keyword research data. DO NOT use the original headline. Make it compelling, keyword-rich (include 1-2 primary keywords), and optimized for search engines.
-- Meta Description: 150-160 characters, including primaries and CTA (suggest at end).
-- Headings: Use H2/H3/H4 for readability and depth (aim for 8-12 sub-sections).
-- Introduction: Hook with key facts and broader implications, include 2-3 primaries, outline article (200-300 words).
-- Body: Write in natural, conversational style with varied sentence structures. Mix short punchy sentences with longer explanatory ones. Use natural transitions like "Here's what this means...", "But wait, there's more...", "Here's the thing...". Include analogies and real-world examples. Avoid robotic corporate language. Interweave keywords naturally (not forced). Add personal insights and human perspective. Target Flesch score 60+ but prioritize natural flow. Aim for 700-1000 engaging words.
-- Conclusion: Summarize implications, forward-looking analysis (e.g., 2026 projections), include CTA (300+ words for closure).
+- Title (H1): CREATE A NEW SEO-optimized title (50-60 characters) using keyword research data. DO NOT use the original headline. Make it compelling, keyword-rich (include 1-2 primary keywords), and optimized for search engines. MUST include trading/forex relevance.
+- Meta Description: 150-160 characters, including primaries and CTA directing to our forex trading signals platform.
+- Headings: Use H2/H3/H4 for readability and depth (aim for 8-12 sub-sections). Include specific trading-focused headings.
+- Introduction: Hook with key facts and TRADING IMPLICATIONS, include 2-3 primaries, outline article (200-300 words). Establish professional authority immediately.
+- Body: Write in PROFESSIONAL, AUTHORITATIVE style with precise technical language appropriate for traders. Include specific trading strategies, technical analysis, and market projections. Maintain professional tone while being engaging. Include data-driven insights, chart pattern analysis, and specific currency pair impacts. Target sophisticated traders who understand market mechanics. Aim for 700-1000 words of high-value trading content.
+- Conclusion: Summarize trading implications, forward-looking analysis (e.g., 2026 projections), include CTA directing to our forex signals platform (300+ words for closure).
 
-Additional SEO: Suggest 3-5 internal links, 2-3 external links to sources, 3-5 image ideas with alt text (include charts/graphs). Maintain keyword density: 1-2% for primaries, use synonyms/variations/LSI naturally.
+Additional SEO: Suggest 3-5 internal links to trading resources, 2-3 external links to authoritative financial sources, 3-5 image ideas with alt text (MUST include forex charts/technical analysis visuals). Maintain keyword density: 1-2% for primaries, use trading terminology naturally.
 
-Ensure high-quality, unique content; paraphrase all sources and add original insights.
+Ensure high-quality, unique content; paraphrase all sources and add original expert trading insights.
 
 After the article, provide an SEO audit: Analyze keyword placement/density, readability score, mobile optimization suggestions, and backlink opportunities. Expand audit with detailed metrics and improvement plans.
 
 Output the entire response as a structured JSON object with the following keys:
-- "keyword_research": An object containing arrays for "primary_keywords", "long_tail_phrases", and "lsi_terms". Each item in the arrays should include details like estimated search volume, competition level, and incorporation suggestions.
+- "keyword_research": An object containing arrays for "primary_keywords", "long_tail_phrases", and "lsi_terms". Each item in the arrays should include details like estimated search volume, competition level, and incorporation suggestions. MUST include forex/trading specific keywords.
 - "article": An object with keys for "title", "meta_description", "introduction" (string, 200-300 words), "body" (array of 10+ strings for sections/paragraphs, including headings as H2/H3/H4 marked strings), and "conclusion" (string, 200-300 words). CRITICAL: Include the full article text content, not just metadata.
 - "seo_suggestions": An object with keys for "internal_links" (array of 3-5 suggestions), "external_links" (array of 2-3 source URLs), and "image_ideas" (array of 3-5 objects each with "description" and "alt_text").
 - "seo_audit": An object with keys for "keyword_analysis" (detailed string summary of placement/density), "readability_score" (number or string, e.g., '62'), "mobile_optimization" (array of 4+ suggestions), and "backlink_opportunities" (array of 3+ ideas).
@@ -306,12 +326,12 @@ print("🎯 Creating adaptive keyword research task...")
 keyword_task = create_adaptive_keyword_task(HEADLINE, headline_context, keyword_researcher)
 print("✅ Adaptive keyword task created and configured")
 
-# Agent 2: Fact and Deep Researcher
-# Role: Gather facts, sources, expert analysis via deep web search. Enhanced for more depth.
+# Agent 2: Fact and Deep Researcher with Forex Trading Focus
+# Role: Gather facts, sources, expert analysis via deep web search with forex trading implications.
 fact_researcher = Agent(
-    role="Business News Fact Researcher",
-    goal="Perform in-depth research on the headline topic using the FREE search tool to get real-time data! Collect extensive facts on Trump tariffs (EU 100% on China/India, Russian oil context, negotiation history), Novo Nordisk layoffs (9,000 jobs, Ozempic production, competition with Eli Lilly, supply chain details). Search for recent news, expert analysis, trade statistics, market data, and economic impacts. Get current information from RSS feeds and news sources.",
-    backstory="You are a seasoned business journalist with access to real-time web search tools. You actively use the search functionality to gather the most current information from news sources, RSS feeds, and public data before writing your analysis.",
+    role="Forex Trading Market Analyst",
+    goal="Perform in-depth research on the headline topic using the FREE search tool to get real-time data WITH SPECIFIC FOREX TRADING IMPLICATIONS! Collect extensive facts on economic events, central bank decisions, and geopolitical developments. CRITICAL: For each fact, analyze specific impacts on major currency pairs (EUR/USD, GBP/USD, USD/JPY), identify key support/resistance levels, and note relevant technical indicators. Search for recent news, expert trading analysis, market data, and potential trading opportunities. Get current information from forex-specific sources, trading platforms, and financial news.",
+    backstory="You are a professional forex market analyst with deep expertise in fundamental and technical analysis. You understand how macroeconomic news impacts currency markets and can identify specific trading opportunities from headline events. You actively use search functionality to gather the most current information from trading sources, financial news, and market data to provide actionable insights for forex traders.",
     tools=tools,  # Utilise l'outil de recherche gratuit
     llm=llm,
     verbose=True,
@@ -322,9 +342,9 @@ fact_researcher = Agent(
 fact_task_description = headline_analyzer.generate_automatic_task_description(HEADLINE, "facts")
 
 fact_task = Task(
-    description=fact_task_description,
+    description=f"{fact_task_description}\n\nCRITICAL FOREX TRADING REQUIREMENTS:\n- For EACH fact or news item, analyze specific impacts on major currency pairs (EUR/USD, GBP/USD, USD/JPY)\n- Identify key support/resistance levels relevant to the headline topic\n- Note technical indicators (RSI, MACD, Moving Averages) that traders should monitor\n- Analyze potential trading scenarios based on the news (bullish/bearish outlook)\n- Include expert opinions from forex analysts and trading strategists\n- Research historical market reactions to similar events for trading context\n- Identify specific entry/exit points and risk management considerations\n\nECONOMIC DATA ACCURACY REQUIREMENTS:\n- VERIFY all economic data with the most recent sources available\n- Use ONLY the following CURRENT economic data (September 2025):\n  * Forex Rates: EUR/USD ~1.1715, GBP/USD ~1.353, USD/JPY ~147.45\n  * Inflation: CPI Headline 2.9%, CPI Core 3.1% (August 2025)\n  * Unemployment: Rate 4.3%, Initial Claims 240,500 (September 2025)\n  * Treasury Yields: 10Y ~4.08%, 2Y ~3.85% (September 2025)\n- Cross-check all data points with multiple sources before including them\n- For any data not listed above, ensure it's from the most recent publications (September 2025)\n- Clearly indicate the date/source of ALL economic data mentioned in your analysis\n- NEVER use outdated economic figures that could lead to incorrect trading decisions",
     agent=fact_researcher,
-    expected_output="A fact-rich report based on current web search results about the headline topic, including recent data, expert analysis, and up-to-date statistics with proper source citations.",
+    expected_output="A professional forex market analysis report based on current web search results, including: 1) Comprehensive facts about the headline topic using VERIFIED current economic data, 2) Specific impacts on major currency pairs with accurate rates, 3) Key technical levels and indicators, 4) Trading scenarios with entry/exit points, 5) Expert analyst opinions, and 6) Historical market context - all with proper source citations and date verification.",
 )
 
 # Agent 3: Data Freshness Validator
@@ -345,54 +365,55 @@ freshness_task = Task(
 )
 
 # Agent 4: Article Writer
-# Role: Generate the full article using research. Enhanced for length and structure.
+# Role: Generate the full article using research. Enhanced for professional forex trading content.
 article_writer = Agent(
-    role="Engaging Reader-First Content Creator",
-    goal="Write a captivating 1200-1800 word article that hooks readers immediately and keeps them scrolling. CRITICAL: Create an SEO-optimized title (50-60 characters) using keyword research data, NOT the original headline. Write with urgency, emotion, and personal connection - like explaining crucial news to a friend who needs to understand it RIGHT NOW. Every paragraph must earn the reader's next scroll.",
-    backstory="You are a master storyteller and engagement expert who understands modern web readers. You know people skim first, so you write scannable content with shocking hooks, short punchy paragraphs, and actionable insights. You never sound corporate or robotic - you write like that friend everyone goes to for advice because you explain complex things in simple, relatable ways. Your articles make people think 'I need to share this!' and 'I should bookmark this site.'",
+    role="Professional Forex Trading Content Specialist",
+    goal="Write a professional, authoritative 1200-1800 word forex trading article that demonstrates expert market analysis while maintaining reader engagement. CRITICAL: Create an SEO-optimized title (50-60 characters) using keyword research data, NOT the original headline. Write with precision, data-driven insights, and technical analysis that establishes credibility with sophisticated traders. Every paragraph must deliver valuable trading insights while driving traffic to our forex signals platform.",
+    backstory="You are a seasoned forex market analyst and trading expert with years of experience in financial markets. You understand both technical and fundamental analysis, and can translate complex market movements into actionable trading strategies. You write with authority and precision while keeping content accessible to traders of all levels. Your articles combine professional market analysis with clear explanations that help traders make informed decisions. You excel at connecting macroeconomic news to specific forex pair movements and trading opportunities.",
     llm=llm,
     verbose=True,
     allow_delegation=False,
 )
 
 write_task = Task(
-    description=f"""Write a captivating, human-style article about '{HEADLINE}' that hooks readers and keeps them engaged. 
+    description=f"""Write a professional, authoritative forex trading article about '{HEADLINE}' that delivers expert market analysis while maintaining reader engagement. 
 
-CRITICAL: CREATE A NEW SEO-OPTIMIZED TITLE (50-60 characters) using keyword research data - DO NOT copy the original headline.
+CRITICAL: CREATE A NEW SEO-OPTIMIZED TITLE (50-60 characters) using keyword research data - DO NOT copy the original headline. MUST include forex/trading relevance.
 
-READER ENGAGEMENT REQUIREMENTS:
-- START with a shocking statistic, surprising fact, or bold statement that makes readers think "I MUST read this!"
-- Write SHORT paragraphs (3-4 sentences maximum, 50-80 words each)
-- Break up text with bullet points, numbered lists, and subheadings (H3) for easy scanning
-- Use conversational questions directly to the reader: "Have you noticed...?" "What does this mean for you?"
-- Include personal anecdotes: "I was talking to a friend..." "Last week, I saw..."
-- Add analogies from daily life: "It's like when you're at the grocery store..."
-- End with 2-3 CONCRETE actions readers can take RIGHT NOW
+PROFESSIONAL FOREX CONTENT REQUIREMENTS:
+- START with authoritative market context and clear trading implications that establish expertise
+- Include specific technical analysis: support/resistance levels, chart patterns, key indicators (RSI, MACD, etc.)
+- Analyze impact on major currency pairs: EUR/USD, GBP/USD, USD/JPY, etc.
+- Provide data-driven insights with precise figures, percentages, and market movements
+- Include expert quotes or consensus views from reputable market analysts
+- Connect macroeconomic news to specific forex trading opportunities
+- End with 2-3 ACTIONABLE trading strategies readers can implement, with specific entry/exit points
 
-WRITING STYLE REQUIREMENTS:
-- Write as if chatting with a close friend who needs to understand this topic
-- Use emotional language: "shocking," "surprising," "crucial," "game-changing"
-- Vary sentence lengths dramatically (mix 5-word punches with longer explanations)
-- Include rhetorical questions that make readers pause and think
-- Use "you" and "your" constantly to make it personal
-- Avoid ALL corporate jargon - write like a real person talks
+PROFESSIONAL WRITING STYLE:
+- Write with authority and precision that demonstrates market expertise
+- Use professional trading terminology correctly and appropriately
+- Balance technical analysis with clear explanations for traders of all levels
+- Maintain professional tone while being engaging and accessible
+- Include evidence-based statements with proper market reasoning
+- Use "traders should consider" instead of "you should" for professional distance
+- Reference historical market patterns and precedents when relevant
 
-VISUAL STRUCTURE:
-- Engaging introduction (2-3 SHORT paragraphs with hook)
-- 6-8 body sections with conversational H2 headings
-- Within each section: H3 subheadings, bullet points, key facts in bold
-- Thoughtful conclusion with specific next steps for readers
-- Make it scannable for mobile readers who skim first
+STRUCTURED CONTENT:
+- Professional introduction establishing market context and trading relevance (2-3 paragraphs)
+- 6-8 body sections with informative H2 headings focused on analysis and strategy
+- Within each section: H3 subheadings, bullet points for key trading insights, important data in bold
+- Comprehensive conclusion with specific trading outlook and strategies
+- Include a final CTA directing to our forex signals platform
 
-ENGAGEMENT HOOKS:
-- Start each section with a question or surprising statement
-- Include "Here's what this means for you..." moments
-- Add urgency: "Right now..." "This week..." "Before you..."
-- Personal stakes: "If you're like most people..." "Your wallet will feel..."
+PROFESSIONAL ENGAGEMENT ELEMENTS:
+- Start each section with a clear market insight or analytical point
+- Include "Trading Implications:" subsections within major points
+- Add timely relevance: "Current market conditions indicate..." "This week's trading outlook..."
+- Professional stakes: "Traders positioned in EUR/USD should note..." "Risk management suggests..."
 
-Focus on the headline topics but write like you're urgently explaining something important to someone you care about.""",
+Focus on delivering professional forex trading analysis and actionable insights that establish expertise while driving traffic to our forex signals platform.""",
     agent=article_writer,
-    expected_output="A highly engaging, scannable article with: 1) NEW SEO title (50-60 chars), 2) compelling meta description, 3) hook-driven introduction with shocking opener, 4) short paragraphs with bullet points and H3 subheadings, 5) conclusion with 2-3 concrete action steps. Content should feel urgent, personal, and written by someone who genuinely cares about helping the reader understand.",
+    expected_output="A professional, authoritative forex trading article with: 1) NEW SEO title (50-60 chars) with forex relevance, 2) compelling meta description with CTA to our platform, 3) expert introduction establishing market context, 4) detailed technical analysis with specific currency pair implications, 5) conclusion with actionable trading strategies and platform CTA. Content should demonstrate forex expertise while remaining engaging and accessible to traders.",
 )
 
 # Agent 5: AI Image Generation Prompt Creator
@@ -488,6 +509,62 @@ if __name__ == "__main__":
     
     print(json.dumps(json_content, indent=2, ensure_ascii=False))
     
+    # Valider les données économiques de l'article
+    print("\n🔍 VALIDATION AVANCÉE DES DONNÉES ÉCONOMIQUES...")
+    article_content = ""
+    if 'article' in json_content:
+        article_content = json_content['article'].get('introduction', '') + ' '.join(json_content['article'].get('body', [])) + json_content['article'].get('conclusion', '')
+    
+    validation_results = economic_validator.validate_article_data(article_content)
+    
+    # Ajouter les résultats de validation à la sortie JSON
+    json_content['economic_data_validation'] = validation_results
+    
+    # Afficher un résumé des résultats de validation
+    print(f"✅ Validation des données économiques terminée - Précision: {validation_results['overall_accuracy']}%")
+    
+    # Afficher les détails des données inexactes
+    inaccurate_data = []
+    categories = [
+        "forex_rates", "inflation_data", "unemployment_data", "treasury_yields",
+        "fed_meetings", "fed_rates", "rate_probabilities", "dxy_index",
+        "other_central_banks", "expert_citations"
+    ]
+    
+    for category in categories:
+        if category in validation_results:
+            for detail in validation_results[category]["details"]:
+                if not detail.get("is_accurate", False):
+                    if "pair" in detail:
+                        inaccurate_data.append(f"{detail['pair']}: Article={detail['article_value']}, Actuel={detail['current_value']}")
+                    elif "metric" in detail:
+                        inaccurate_data.append(f"{detail['metric']}: Article={detail['article_value']}, Actuel={detail['current_value']}")
+                    elif "tenor" in detail:
+                        inaccurate_data.append(f"{detail['tenor']}: Article={detail['article_value']}%, Actuel={detail['current_value']}%")
+                    elif "type" in detail:
+                        type_name = detail['type']
+                        if "fomc_meeting" in type_name:
+                            inaccurate_data.append(f"FOMC Meeting: Article={detail['article_value']}, Actuel={detail['current_value']}")
+                        elif "fed_rate" in type_name:
+                            inaccurate_data.append(f"Fed Rate: Article={detail['article_value']}, Actuel={detail['current_value']}")
+                        elif "prob" in type_name:
+                            inaccurate_data.append(f"Rate Probability: Article={detail['article_value']}, Actuel={detail['current_value']}")
+                        elif "dxy" in type_name:
+                            inaccurate_data.append(f"DXY Index: Article={detail['article_value']}, Actuel={detail['current_value']}")
+                        elif "boc" in type_name or "ecb" in type_name or "boe" in type_name:
+                            inaccurate_data.append(f"Central Bank: Article={detail['article_value']}, Actuel={detail['current_value']}")
+                        elif "expert" in type_name:
+                            inaccurate_data.append(f"Expert Citation: {detail.get('expert', 'Unknown')}")
+                        else:
+                            inaccurate_data.append(f"{type_name}: Article={detail['article_value']}, Actuel={detail['current_value']}")
+    
+    if inaccurate_data:
+        print("\n⚠️ DONNÉES ÉCONOMIQUES INEXACTES DÉTECTÉES:")
+        for item in inaccurate_data:
+            print(f"   - {item}")
+    else:
+        print("✅ Toutes les données économiques sont exactes et à jour!")
+    
     # Save to file
     with open("seo_article_output.json", "w", encoding="utf-8") as f:
         json.dump(json_content, f, indent=2, ensure_ascii=False)
@@ -498,13 +575,13 @@ if __name__ == "__main__":
         generated_title = json_content['article'].get('title', '')
         title_length = len(generated_title)
         
-        body_text = json_content['article'].get('introduction', '') + ' '.join(json_content['article'].get('body', [])) + json_content['article'].get('conclusion', '')
-        word_count = len(body_text.split())
+        word_count = len(article_content.split())
         
         print(f"\nARTICLE METRICS:")
         print(f"   Generated title: \"{generated_title}\"")
         print(f"   Title length: {title_length} chars ({'Optimal' if title_length <= 60 else 'Too long'})")
         print(f"   Word count: {word_count} (target: 1000-1500)")
+        print(f"   Economic data accuracy: {validation_results['overall_accuracy']}%")
         
         # Verify title is different from headline
         if generated_title.lower() != HEADLINE.lower():

@@ -59,7 +59,8 @@ class AdaptiveKeywordContextAnalyzer:
             'economic_data': len(extracted_patterns['measurements']) + len(extracted_patterns['time_indicators']) + len(extracted_patterns['sentiment_indicators']),
             'financial_markets': len(extracted_patterns['organizations']) + len(extracted_patterns['action_words']),
             'business_performance': len(extracted_patterns['comparisons']) + len(extracted_patterns['measurements']),
-            'consumer_research': 1 if 'consumer' in headline_lower or 'sentiment' in headline_lower else 0
+            'consumer_research': 1 if 'consumer' in headline_lower or 'sentiment' in headline_lower else 0,
+            'general_business': 0  # Ajout de cette clé avec valeur par défaut
         }
         
         primary_domain = max(domain_scores.keys(), key=domain_scores.get) if any(domain_scores.values()) else 'general_business'
