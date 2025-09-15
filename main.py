@@ -88,7 +88,7 @@ print("🎯 SYSTEM READY FOR ADAPTIVE KEYWORD RESEARCH!")
 print("=" * 60)
 
 # Define the Original Prompt/Headline
-HEADLINE = "What's up next week? Central Bank decisions highlighted by the FOMC rate decision - Forex TRADING IMPLICATIONS"
+HEADLINE = "US stock markets start flat and finish flat"
 
 # ADAPTIVE ANALYSIS SYSTEM (NO MORE HARDCODING!)
 print("\n🧠 ADAPTIVE HEADLINE ANALYSIS...")
